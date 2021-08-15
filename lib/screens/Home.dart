@@ -60,6 +60,12 @@ class _HomeState extends State<Home> {
                   Navigator.pushNamed(context, '/topten');
                 },
               ),
+              ElevatedButton(
+                child: Text("user's sugguestion"),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/users-sugguestion');
+                },
+              ),
               Text(count.toString()),
               GestureDetector(
                   onTap: _onTap,

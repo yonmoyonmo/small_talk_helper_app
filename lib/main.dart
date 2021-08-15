@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => Home(),
         '/topten': (context) => ToptenList(),
         '/favorite': (context) => Favorite(),
-        '/user-sugguestion': (context) => UserSugguestion(),
+        '/users-sugguestion': (context) => UserSugguestion(),
       },
     );
   }
