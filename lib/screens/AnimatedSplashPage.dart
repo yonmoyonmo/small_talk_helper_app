@@ -1,12 +1,15 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
-class SmallTalkHelperHome extends StatefulWidget {
-  SmallTalkHelperHome({Key? key}) : super(key: key);
+import 'Home.dart';
+
+class AnimatedSplashPage extends StatefulWidget {
+  AnimatedSplashPage({Key? key}) : super(key: key);
   @override
-  _SmallTalkHelperHomeState createState() => _SmallTalkHelperHomeState();
+  _AnimatedSplashPageState createState() => _AnimatedSplashPageState();
 }
 
-class _SmallTalkHelperHomeState extends State<SmallTalkHelperHome>
+class _AnimatedSplashPageState extends State<AnimatedSplashPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
@@ -22,19 +25,23 @@ class _SmallTalkHelperHomeState extends State<SmallTalkHelperHome>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: Duration(seconds: 4),
+      duration: Duration(seconds: 3),
       vsync: this,
     )..repeat();
+    Timer(
+        Duration(seconds: 3),
+        () => Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Home())));
   }
 
   @override
   Widget build(BuildContext context) {
-    return SlideTransition(
-      // alignment: Alignment.center,
-      // turns: _animationController,
-      position: _offsetAnimation,
-      child: Scaffold(
-        body: Container(
+    return Scaffold(
+      body: SlideTransition(
+        // alignment: Alignment.center,
+        // turns: _animationController,
+        position: _offsetAnimation,
+        child: Container(
           alignment: Alignment.center,
           child: Text("test"),
         ),

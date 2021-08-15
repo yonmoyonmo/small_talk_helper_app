@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:small_talk_helper_app/screens/SmallTalkHelperHome.dart';
+import 'package:small_talk_helper_app/screens/AnimatedSplashPage.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,11 +10,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Small_Talk_Helper',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SmallTalkHelperHome(),
+      home: AnimatedSplashPage(),
     );
   }
 }
