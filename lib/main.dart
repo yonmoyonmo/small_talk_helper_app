@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:small_talk_helper_app/screens/AnimatedSplashPage.dart';
+import 'package:small_talk_helper_app/screens/Favorite.dart';
+import 'package:small_talk_helper_app/screens/Home.dart';
+import 'package:small_talk_helper_app/screens/ToptenList.dart';
+import 'package:small_talk_helper_app/screens/UserSugguestion.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +18,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AnimatedSplashPage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => AnimatedSplashPage(),
+        '/home': (context) => Home(),
+        '/topten': (context) => ToptenList(),
+        '/favorite': (context) => Favorite(),
+        '/user-sugguestion': (context) => UserSugguestion(),
+      },
     );
   }
 }
