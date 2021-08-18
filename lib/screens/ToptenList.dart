@@ -37,34 +37,39 @@ class _ToptenListState extends State<ToptenList> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+            appBar: AppBar(
+              title: Text("아이폰에는 뒤로가기 없다"),
+            ),
             body: Container(
-      child: FutureBuilder(
-        future: sugguestionList,
-        builder:
-            (BuildContext context, AsyncSnapshot<SugguestionList> snapshot) {
-          if (snapshot.hasData) {
-            for (int i = 0; i < snapshot.data!.sugguestions.length; i++) {
-              print(snapshot.data!.sugguestions[i].sugguestionText);
-            }
-            return ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: snapshot.data!.sugguestions.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: 50,
-                    child: Center(
-                        child: Text(
-                            '${snapshot.data!.sugguestions[index].sugguestionText}' +
-                                " " +
-                                '${snapshot.data!.sugguestions[index].countLikes}')),
-                  );
-                });
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
-          return const CircularProgressIndicator();
-        },
-      ),
-    )));
+              child: FutureBuilder(
+                future: sugguestionList,
+                builder: (BuildContext context,
+                    AsyncSnapshot<SugguestionList> snapshot) {
+                  if (snapshot.hasData) {
+                    for (int i = 0;
+                        i < snapshot.data!.sugguestions.length;
+                        i++) {
+                      print(snapshot.data!.sugguestions[i].sugguestionText);
+                    }
+                    return ListView.builder(
+                        padding: const EdgeInsets.all(8),
+                        itemCount: snapshot.data!.sugguestions.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            height: 50,
+                            child: Center(
+                                child: Text(
+                                    '${snapshot.data!.sugguestions[index].sugguestionText}' +
+                                        " " +
+                                        '${snapshot.data!.sugguestions[index].countLikes}')),
+                          );
+                        });
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
+            )));
   }
 }

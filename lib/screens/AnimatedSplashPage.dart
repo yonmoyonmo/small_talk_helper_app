@@ -43,7 +43,7 @@ class _AnimatedSplashPageState extends State<AnimatedSplashPage>
         position: _offsetAnimation,
         child: Container(
           alignment: Alignment.center,
-          child: Text("test"),
+          child: Text("Small Talk Helper by wonmonae"),
         ),
       ),
     );

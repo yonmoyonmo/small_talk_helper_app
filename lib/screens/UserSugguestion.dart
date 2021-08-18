@@ -22,11 +22,17 @@ class _UserSugguestionState extends State<UserSugguestion> {
     if (afterJob) {
       return SafeArea(
           child: Scaffold(
+        appBar: AppBar(
+          title: Text("아이폰에는 뒤로가기 없다"),
+        ),
         body: Text("뒤로 가세요 제발 짜증나게 하지 말고"),
       ));
     } else {
       return SafeArea(
           child: Scaffold(
+        appBar: AppBar(
+          title: Text("아이폰에는 뒤로가기 없다"),
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
