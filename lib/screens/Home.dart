@@ -200,7 +200,17 @@ class _HomeState extends State<Home> {
                               AsyncSnapshot<bool> snapshot) {
                             switch (snapshot.connectionState) {
                               case ConnectionState.waiting:
-                                return const CircularProgressIndicator();
+                                return LikeButton(
+                                    size: 100,
+                                    isLiked: false,
+                                    likeBuilder: (bool isLiked) {
+                                      return Icon(
+                                        Icons.favorite,
+                                        color:
+                                            isLiked ? Colors.red : Colors.grey,
+                                        size: 100,
+                                      );
+                                    });
                               default:
                                 if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
