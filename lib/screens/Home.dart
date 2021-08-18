@@ -16,7 +16,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var testText = "";
   var sugguestionId = 0;
   var likeValue;
 
@@ -59,7 +58,6 @@ class _HomeState extends State<Home> {
 
   Future<void> _getSugguestionTap() async {
     setState(() {
-      testText = "tapped";
       sugguestion = getRandomSugguestion();
     });
   }
@@ -113,98 +111,124 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          body: Container(
-        alignment: Alignment.center,
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                child: Text("TOPTEN"),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/topten');
-                },
-              ),
-              ElevatedButton(
-                child: Text("user's sugguestion"),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/users-sugguestion');
-                },
-              ),
-              Container(
-                child: FutureBuilder(
-                  future: sugguestion,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<Sugguestion> snapshot) {
-                    if (snapshot.hasData) {
-                      // WidgetsBinding.instance!.addPostFrameCallback((_) {
-                      //   setState(() {
-                      //     sugguestionId = snapshot.data!.id;
-                      //   });
-                      // });
-                      return Container(
-                        width: 200,
-                        height: 200,
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.all(10),
-                        color: Colors.amber,
-                        child: Center(
-                            child: Text(snapshot.data!.sugguestionText +
-                                " : " +
-                                snapshot.data!.countLikes.toString())),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text('${snapshot.error}' +
-                          " : " +
-                          sugguestionId.toString());
-                    }
-                    return const CircularProgressIndicator();
-                  },
-                ),
-              ),
-              GestureDetector(
-                onTap: _getSugguestionTap,
-                child: Container(
-                  width: 100,
-                  height: 50,
-                  color: Color.fromRGBO(10, 190, 23, 1),
-                  child: Center(
-                    child: Text(
-                      testText,
-                    ),
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            iconTheme: IconThemeData(color: Colors.black),
+          ),
+          drawer: Drawer(
+            child: ListView(
+              children: [
+                Container(
+                  height: 100,
+                  child: DrawerHeader(
+                    child: Text('menu'),
                   ),
                 ),
-              ),
-              FutureBuilder<bool>(
-                future: _isLiked,
-                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return const CircularProgressIndicator();
-                    default:
-                      if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        return LikeButton(
-                          size: 50,
-                          isLiked: snapshot.data,
-                          likeBuilder: (bool isLiked) {
-                            return Icon(
-                              Icons.favorite,
-                              color: isLiked ? Colors.red : Colors.grey,
-                              size: 50,
-                            );
-                          },
-                          onTap: applyLikes,
-                        );
-                      }
-                  }
-                },
-              ),
-            ],
+                ListTile(
+                  title: Text('topten'),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/topten');
+                  },
+                ),
+                ListTile(
+                  title: Text('users-sugguestion'),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/users-sugguestion');
+                  },
+                )
+              ],
+            ),
           ),
-        ),
-      )),
+          body: Container(
+            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+            alignment: Alignment.center,
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: FutureBuilder(
+                      future: sugguestion,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Sugguestion> snapshot) {
+                        if (snapshot.hasData) {
+                          return Container(
+                            width: MediaQuery.of(context).size.width - 100,
+                            height: 400,
+                            padding: EdgeInsets.all(10),
+                            margin: EdgeInsets.all(10),
+                            color: Colors.white,
+                            child: Center(
+                                child: Text(snapshot.data!.sugguestionText +
+                                    " : " +
+                                    snapshot.data!.countLikes.toString())),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('${snapshot.error}' +
+                              " : " +
+                              sugguestionId.toString());
+                        }
+                        return const CircularProgressIndicator();
+                      },
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width - 100,
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: _getSugguestionTap,
+                          child: Container(
+                            width: 100,
+                            height: 100,
+                            color: Colors.white,
+                            child: Center(
+                              child: Icon(
+                                Icons.shuffle,
+                                size: 100,
+                              ),
+                            ),
+                          ),
+                        ),
+                        FutureBuilder<bool>(
+                          future: _isLiked,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<bool> snapshot) {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return const CircularProgressIndicator();
+                              default:
+                                if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else {
+                                  return LikeButton(
+                                    size: 100,
+                                    isLiked: snapshot.data,
+                                    likeBuilder: (bool isLiked) {
+                                      return Icon(
+                                        Icons.favorite,
+                                        color:
+                                            isLiked ? Colors.red : Colors.grey,
+                                        size: 100,
+                                      );
+                                    },
+                                    onTap: applyLikes,
+                                  );
+                                }
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )),
     );
   }
 }
