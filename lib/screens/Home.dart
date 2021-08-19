@@ -132,9 +132,24 @@ class _HomeState extends State<Home> {
             child: ListView(
               children: [
                 Container(
-                  height: 100,
+                  height: 400,
                   child: DrawerHeader(
-                    child: Text('menu'),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image(
+                          image: AssetImage('images/wonmonaeLogo.png'),
+                        ),
+                        Text(
+                          "스몰 토크 헬퍼",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Text(
+                          "small talk helper",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 ListTile(
@@ -166,20 +181,23 @@ class _HomeState extends State<Home> {
                           AsyncSnapshot<Sugguestion> snapshot) {
                         if (snapshot.hasData) {
                           return Container(
-                            width: MediaQuery.of(context).size.width - 100,
-                            height: 400,
-                            padding: EdgeInsets.all(10),
-                            margin: EdgeInsets.all(10),
-                            color: Colors.white,
-                            child: Center(
-                                child: Text(snapshot.data!.sugguestionText +
-                                    " : " +
-                                    snapshot.data!.countLikes.toString())),
-                          );
+                              width: MediaQuery.of(context).size.width - 100,
+                              height: 400,
+                              padding: EdgeInsets.all(10),
+                              margin: EdgeInsets.all(10),
+                              color: Colors.white,
+                              child: Center(
+                                child: Text(
+                                  snapshot.data!.sugguestionText,
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    height: 1,
+                                  ),
+                                ),
+                              ));
                         } else if (snapshot.hasError) {
-                          return Text('${snapshot.error}' +
-                              " : " +
-                              sugguestionId.toString());
+                          print('${snapshot.error}');
+                          return Text("error");
                         }
                         return const CircularProgressIndicator();
                       },

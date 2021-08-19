@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:small_talk_helper_app/screens/AnimatedSplashPage.dart';
-import 'package:small_talk_helper_app/screens/Favorite.dart';
 import 'package:small_talk_helper_app/screens/Home.dart';
 import 'package:small_talk_helper_app/screens/ToptenList.dart';
 import 'package:small_talk_helper_app/screens/UserSugguestion.dart';
@@ -24,7 +23,6 @@ class MyApp extends StatelessWidget {
         '/': (context) => AnimatedSplashPage(),
         '/home': (context) => Home(),
         '/topten': (context) => ToptenList(),
-        '/favorite': (context) => Favorite(),
         '/users-sugguestion': (context) => UserSugguestion(),
       },
     );

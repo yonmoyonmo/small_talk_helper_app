@@ -38,7 +38,9 @@ class _ToptenListState extends State<ToptenList> {
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: Text("아이폰에는 뒤로가기 없다"),
+              backgroundColor: Colors.white,
+              elevation: 0,
+              iconTheme: IconThemeData(color: Colors.black),
             ),
             body: Container(
               child: FutureBuilder(

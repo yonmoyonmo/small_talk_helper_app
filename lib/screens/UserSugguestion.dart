@@ -23,7 +23,9 @@ class _UserSugguestionState extends State<UserSugguestion> {
       return SafeArea(
           child: Scaffold(
         appBar: AppBar(
-          title: Text("아이폰에는 뒤로가기 없다"),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
         ),
         body: Text("뒤로 가세요 제발 짜증나게 하지 말고"),
       ));
@@ -31,7 +33,9 @@ class _UserSugguestionState extends State<UserSugguestion> {
       return SafeArea(
           child: Scaffold(
         appBar: AppBar(
-          title: Text("아이폰에는 뒤로가기 없다"),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
