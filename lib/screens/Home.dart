@@ -192,28 +192,37 @@ class _HomeState extends State<Home> {
                     builder: (BuildContext context,
                         AsyncSnapshot<Sugguestion> snapshot) {
                       if (snapshot.hasData) {
-                        return Container(
-                            width: MediaQuery.of(context).size.width - 100,
-                            height: MediaQuery.of(context).size.height / 2,
-                            padding: EdgeInsets.all(10),
-                            margin: EdgeInsets.all(10),
-                            color: Colors.white,
-                            child: Center(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      snapshot.data!.sugguestionText,
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                        height: 2,
+                        return AnimatedSwitcher(
+                          duration: Duration(milliseconds: 300),
+                          transitionBuilder:
+                              (Widget child, Animation<double> animation) {
+                            return ScaleTransition(
+                                child: child, scale: animation);
+                          },
+                          child: Container(
+                              key: ValueKey<int>(snapshot.data!.id),
+                              width: MediaQuery.of(context).size.width - 80,
+                              height: MediaQuery.of(context).size.height / 2,
+                              padding: EdgeInsets.all(10),
+                              margin: EdgeInsets.all(10),
+                              color: Colors.white,
+                              child: Center(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        snapshot.data!.sugguestionText,
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          height: 2,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ));
+                              )),
+                        );
                       } else if (snapshot.hasError) {
                         //print('${snapshot.error}');
                         return Text("error");
@@ -223,7 +232,7 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width - 100,
+                  width: MediaQuery.of(context).size.width - 80,
                   padding: EdgeInsets.all(10),
                   margin: EdgeInsets.all(10),
                   child: Row(

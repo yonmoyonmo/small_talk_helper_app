@@ -25,7 +25,7 @@ class _AnimatedSplashPageState extends State<AnimatedSplashPage>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: Duration(seconds: 10),
+      duration: Duration(seconds: 15),
       vsync: this,
     )..repeat();
     Timer(
