@@ -39,20 +39,32 @@ class _HomeState extends State<Home> {
   }
 
   Future<Sugguestion> getRandomSugguestion() async {
-    final response =
-        await http.get(smallTalkHelperEndpoint.getEndpoint("random"));
-    if (response.statusCode == 200) {
-      Sugguestion result = Sugguestion.fromJson(jsonDecode(response.body));
-      setState(() {
-        sugguestionId = result.id;
-        _isLiked = _prefs.then((SharedPreferences prefs) {
-          print(sugguestionId);
-          return prefs.getBool('$sugguestionId') ?? false;
+    try {
+      final response =
+          await http.get(smallTalkHelperEndpoint.getEndpoint("random"));
+      if (response.statusCode == 200) {
+        Sugguestion result = Sugguestion.fromJson(jsonDecode(response.body));
+        setState(() {
+          sugguestionId = result.id;
+          _isLiked = _prefs.then((SharedPreferences prefs) {
+            print(sugguestionId);
+            return prefs.getBool('$sugguestionId') ?? false;
+          });
         });
+        return result;
+      } else {
+        throw Exception("failed to fetch Sugguestion");
+      }
+    } on Exception {
+      var failed = jsonEncode({
+        "id": 0,
+        "sugguestion_type": "no",
+        "sugguestion_text": "대화 주제를 불러올 수 없습니다.",
+        "count_likes": 0,
+        "created_at": "no",
       });
+      Sugguestion result = Sugguestion.fromJson(jsonDecode(failed));
       return result;
-    } else {
-      throw Exception("failed to fetch Sugguestion");
     }
   }
 

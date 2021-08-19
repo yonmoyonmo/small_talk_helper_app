@@ -16,9 +16,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Small_Talk_Helper',
       theme: ThemeData(
-        primaryColor: Colors.white,
-        primarySwatch: Colors.blue,
-      ),
+          primaryColor: Colors.white,
+          primarySwatch: Colors.blue,
+          fontFamily: 'DungGeunMo'),
       initialRoute: '/',
       routes: {
         '/': (context) => AnimatedSplashPage(),

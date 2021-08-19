@@ -25,7 +25,7 @@ class _AnimatedSplashPageState extends State<AnimatedSplashPage>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: 10),
       vsync: this,
     )..repeat();
     Timer(
@@ -41,9 +41,29 @@ class _AnimatedSplashPageState extends State<AnimatedSplashPage>
         // alignment: Alignment.center,
         // turns: _animationController,
         position: _offsetAnimation,
-        child: Container(
-          alignment: Alignment.center,
-          child: Text("Small Talk Helper by wonmonae"),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              child: Text(
+                "스몰 토크 헬퍼",
+                style: TextStyle(
+                  fontSize: 40,
+                  height: 2,
+                ),
+              ),
+            ),
+            Container(
+              alignment: Alignment.center,
+              child: Text(
+                "by wonmonae",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
