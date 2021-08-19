@@ -45,6 +45,12 @@ class _AnimatedSplashPageState extends State<AnimatedSplashPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
+                height: 200,
+                alignment: Alignment.center,
+                child: Image(
+                  image: AssetImage("images/SmallTalkHelperAppIcon.png"),
+                )),
+            Container(
               alignment: Alignment.center,
               child: Text(
                 "스몰 토크 헬퍼",

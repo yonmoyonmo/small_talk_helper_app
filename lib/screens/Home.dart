@@ -132,13 +132,17 @@ class _HomeState extends State<Home> {
             child: ListView(
               children: [
                 Container(
-                  height: 400,
+                  height: 200,
                   child: DrawerHeader(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image(
-                          image: AssetImage('images/wonmonaeLogo.png'),
+                        Container(
+                          height: 100,
+                          child: Image(
+                            image:
+                                AssetImage('images/SmallTalkHelperAppIcon.png'),
+                          ),
                         ),
                         Text(
                           "스몰 토크 헬퍼",
@@ -153,13 +157,23 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 ListTile(
-                  title: Text('topten'),
+                  title: Text(
+                    '인기 짱 대화 주제 TOP 10',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
                   onTap: () {
                     Navigator.pushNamed(context, '/topten');
                   },
                 ),
                 ListTile(
-                  title: Text('users-sugguestion'),
+                  title: Text(
+                    '개발자에게 대화 주제 추천하기',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
                   onTap: () {
                     Navigator.pushNamed(context, '/users-sugguestion');
                   },

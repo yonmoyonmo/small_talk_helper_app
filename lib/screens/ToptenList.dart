@@ -43,6 +43,7 @@ class _ToptenListState extends State<ToptenList> {
               iconTheme: IconThemeData(color: Colors.black),
             ),
             body: Container(
+              decoration: BoxDecoration(color: Colors.white),
               child: FutureBuilder(
                 future: sugguestionList,
                 builder: (BuildContext context,
@@ -57,13 +58,15 @@ class _ToptenListState extends State<ToptenList> {
                         padding: const EdgeInsets.all(8),
                         itemCount: snapshot.data!.sugguestions.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            height: 50,
-                            child: Center(
-                                child: Text(
-                                    '${snapshot.data!.sugguestions[index].sugguestionText}' +
-                                        " " +
-                                        '${snapshot.data!.sugguestions[index].countLikes}')),
+                          return ListTile(
+                            leading: Text(
+                              (index + 1).toString(),
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            title: Text(
+                              '${snapshot.data!.sugguestions[index].sugguestionText}',
+                              style: TextStyle(fontSize: 16),
+                            ),
                           );
                         });
                   } else if (snapshot.hasError) {
