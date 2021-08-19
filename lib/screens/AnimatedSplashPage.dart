@@ -48,7 +48,7 @@ class _AnimatedSplashPageState extends State<AnimatedSplashPage>
                 height: 200,
                 alignment: Alignment.center,
                 child: Image(
-                  image: AssetImage("images/SmallTalkHelperAppIcon.png"),
+                  image: AssetImage("images/STHAppIcon2.png"),
                 )),
             Container(
               alignment: Alignment.center,

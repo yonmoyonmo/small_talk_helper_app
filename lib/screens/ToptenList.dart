@@ -52,7 +52,7 @@ class _ToptenListState extends State<ToptenList> {
                     for (int i = 0;
                         i < snapshot.data!.sugguestions.length;
                         i++) {
-                      print(snapshot.data!.sugguestions[i].sugguestionText);
+                      //print(snapshot.data!.sugguestions[i].sugguestionText);
                     }
                     return ListView.builder(
                         padding: const EdgeInsets.all(8),

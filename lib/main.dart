@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Small_Talk_Helper',
       theme: ThemeData(
           primaryColor: Colors.white,
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.grey,
           fontFamily: 'DungGeunMo'),
       initialRoute: '/',
       routes: {
