@@ -55,7 +55,8 @@ class _HomeState extends State<Home> {
       } else {
         throw Exception("failed to fetch Sugguestion");
       }
-    } on Exception {
+    } catch (Exception) {
+      print(Exception);
       var failed = jsonEncode({
         "id": 0,
         "sugguestion_type": "no",
@@ -75,47 +76,53 @@ class _HomeState extends State<Home> {
   }
 
   Future<bool> applyLikes(bool liked) async {
-    final SharedPreferences prefs = await _prefs;
-    int likeValue = 1;
+    try {
+      final SharedPreferences prefs = await _prefs;
+      int likeValue = 1;
 
-    //print("liked : " + liked.toString());
-    //print("preference key : " + prefs.containsKey('$sugguestionId').toString());
+      //print("liked : " + liked.toString());
+      //print("preference key : " + prefs.containsKey('$sugguestionId').toString());
 
-    if (liked) {
-      likeValue = -1;
-      final response = await http.post(
-          smallTalkHelperEndpoint.getEndpoint("likes"),
-          body: jsonEncode(
-              {"sugguestionId": sugguestionId, "likeValue": likeValue}),
-          headers: {"Content-Type": "application/json"});
-      if (response.statusCode == 200) {
-        setState(() {
-          _isLiked = prefs.setBool('$sugguestionId', false).then((bool result) {
-            //print("result : " + result.toString());
-            return false;
+      if (liked) {
+        likeValue = -1;
+        final response = await http.post(
+            smallTalkHelperEndpoint.getEndpoint("likes"),
+            body: jsonEncode(
+                {"sugguestionId": sugguestionId, "likeValue": likeValue}),
+            headers: {"Content-Type": "application/json"});
+        if (response.statusCode == 200) {
+          setState(() {
+            _isLiked =
+                prefs.setBool('$sugguestionId', false).then((bool result) {
+              //print("result : " + result.toString());
+              return false;
+            });
           });
-        });
-        return true;
+          return true;
+        } else {
+          throw Exception("failed to apply user's like");
+        }
       } else {
-        throw Exception("failed to apply user's like");
-      }
-    } else {
-      final response = await http.post(
-          smallTalkHelperEndpoint.getEndpoint("likes"),
-          body: jsonEncode(
-              {"sugguestionId": sugguestionId, "likeValue": likeValue}),
-          headers: {"Content-Type": "application/json"});
-      if (response.statusCode == 200) {
-        setState(() {
-          _isLiked = prefs.setBool('$sugguestionId', true).then((bool result) {
-            //print("result : " + result.toString());
-            return true;
+        final response = await http.post(
+            smallTalkHelperEndpoint.getEndpoint("likes"),
+            body: jsonEncode(
+                {"sugguestionId": sugguestionId, "likeValue": likeValue}),
+            headers: {"Content-Type": "application/json"});
+        if (response.statusCode == 200) {
+          setState(() {
+            _isLiked =
+                prefs.setBool('$sugguestionId', true).then((bool result) {
+              //print("result : " + result.toString());
+              return true;
+            });
           });
-        });
-        return true;
-      } else {
-        throw Exception("failed to apply user's like");
+          return true;
+        } else {
+          throw Exception("failed to apply user's like");
+        }
       }
+    } on Exception {
+      return liked;
     }
   }
 

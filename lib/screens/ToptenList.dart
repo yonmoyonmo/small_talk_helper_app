@@ -18,12 +18,26 @@ class _ToptenListState extends State<ToptenList> {
   get colorCodes => null;
 
   Future<SugguestionList> getRandomSugguestionList() async {
-    final response =
-        await http.get(new SmallTalkHelperEndpoint().getEndpoint("topten"));
-    if (response.statusCode == 200) {
-      return SugguestionList.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception("failed to fetch SugguestionList");
+    try {
+      final response =
+          await http.get(new SmallTalkHelperEndpoint().getEndpoint("topten"));
+      if (response.statusCode == 200) {
+        return SugguestionList.fromJson(jsonDecode(response.body));
+      } else {
+        throw Exception("failed to fetch SugguestionList");
+      }
+    } on Exception {
+      Map<String, dynamic> failed = {
+        "id": 0,
+        "sugguestion_type": "no",
+        "sugguestion_text": "대화 주제를 불러올 수 없습니다.",
+        "count_likes": 0,
+        "created_at": "no",
+      };
+      List<dynamic> failedList = [];
+      failedList.add(failed);
+      SugguestionList result = SugguestionList.fromJson(failedList);
+      return result;
     }
   }
 

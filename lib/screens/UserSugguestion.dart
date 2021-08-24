@@ -204,17 +204,21 @@ class _UserSugguestionState extends State<UserSugguestion> {
   }
 
   Future<bool> _sendSugguestion() async {
-    final response = await http.post(
-        new SmallTalkHelperEndpoint().getEndpoint("users-sugguestion"),
-        body: jsonEncode({
-          "userName": userNameController.text,
-          "text": userSugguestionController.text
-        }),
-        headers: {"Content-Type": "application/json"});
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      throw Exception("failed to upload user's sugguestion");
+    try {
+      final response = await http.post(
+          new SmallTalkHelperEndpoint().getEndpoint("users-sugguestion"),
+          body: jsonEncode({
+            "userName": userNameController.text,
+            "text": userSugguestionController.text
+          }),
+          headers: {"Content-Type": "application/json"});
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception("failed to upload user's sugguestion");
+      }
+    } on Exception {
+      return false;
     }
   }
 }
