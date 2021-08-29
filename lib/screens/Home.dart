@@ -243,21 +243,16 @@ class _HomeState extends State<Home> {
                   padding: EdgeInsets.all(10),
                   margin: EdgeInsets.all(10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      GestureDetector(
-                        onTap: _getSugguestionTap,
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          color: Colors.white,
-                          child: Center(
-                            child: Icon(
-                              Icons.shuffle,
-                              size: 100,
-                            ),
-                          ),
+                      TextButton.icon(
+                        onPressed: _getSugguestionTap,
+                        icon: Icon(
+                          Icons.shuffle,
+                          size: 70,
+                          color: Colors.black,
                         ),
+                        label: Text(""),
                       ),
                       FutureBuilder<bool>(
                         future: _isLiked,
@@ -266,13 +261,13 @@ class _HomeState extends State<Home> {
                           switch (snapshot.connectionState) {
                             case ConnectionState.waiting:
                               return LikeButton(
-                                  size: 100,
+                                  size: 70,
                                   isLiked: false,
                                   likeBuilder: (bool isLiked) {
                                     return Icon(
                                       Icons.favorite,
                                       color: isLiked ? Colors.red : Colors.grey,
-                                      size: 100,
+                                      size: 70,
                                     );
                                   });
                             default:
@@ -280,7 +275,7 @@ class _HomeState extends State<Home> {
                                 return Text('Error: ${snapshot.error}');
                               } else {
                                 return LikeButton(
-                                  size: 100,
+                                  size: 70,
                                   isLiked: snapshot.data,
                                   circleColor: CircleColor(
                                       start: Colors.black, end: Colors.red),
@@ -292,7 +287,7 @@ class _HomeState extends State<Home> {
                                     return Icon(
                                       Icons.favorite,
                                       color: isLiked ? Colors.red : Colors.grey,
-                                      size: 100,
+                                      size: 70,
                                     );
                                   },
                                   onTap: applyLikes,
