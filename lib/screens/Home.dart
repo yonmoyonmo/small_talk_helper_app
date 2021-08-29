@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -7,6 +8,8 @@ import 'package:small_talk_helper_app/payloads/sugguestion.dart';
 import 'package:small_talk_helper_app/utils/SmallTalkHelperEndpoint.dart';
 import 'package:like_button/like_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -26,6 +29,12 @@ class _HomeState extends State<Home> {
   late Future<bool> _isLiked;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
+  final String iOSTestId = 'ca-app-pub-3940256099942544/2934735716';
+  final String androidTestId = 'ca-app-pub-3940256099942544/6300978111';
+  late BannerAd banner;
+  late AdWidget adWidget;
+  //late Container adContainer;
+
   @override
   void initState() {
     super.initState();
@@ -34,6 +43,22 @@ class _HomeState extends State<Home> {
     _isLiked = _prefs.then((SharedPreferences prefs) {
       return prefs.getBool('$sugguestionId') ?? false;
     });
+
+    banner = BannerAd(
+      size: AdSize.banner,
+      adUnitId: Platform.isIOS ? iOSTestId : androidTestId,
+      listener: BannerAdListener(),
+      request: AdRequest(),
+    )..load();
+
+    adWidget = AdWidget(ad: banner);
+
+    // adContainer = Container(
+    //   alignment: Alignment.center,
+    //   child: adWidget,
+    //   width: banner.size.width.toDouble(),
+    //   height: banner.size.height.toDouble(),
+    // );
 
     sugguestion = getRandomSugguestion();
   }
@@ -298,7 +323,13 @@ class _HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                )
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: adWidget,
+                  width: banner.size.width.toDouble(),
+                  height: banner.size.height.toDouble(),
+                ),
               ],
             ),
           )),
