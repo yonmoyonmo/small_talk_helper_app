@@ -7,9 +7,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  print("11");
   MobileAds.instance.initialize();
-  print("22");
   runApp(MyApp());
 }
 

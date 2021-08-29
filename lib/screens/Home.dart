@@ -151,188 +151,214 @@ class _HomeState extends State<Home> {
     }
   }
 
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('앱을 종료하시겠습니까?'),
+            content: new Text('네를 누르면 종료됩니다.'),
+            actions: <Widget>[
+              new TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('아니오'),
+              ),
+              new TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: new Text('네'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            iconTheme: IconThemeData(color: Colors.black),
-          ),
-          drawer: Drawer(
-            child: ListView(
-              children: [
-                Container(
-                  height: 200,
-                  child: DrawerHeader(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 100,
-                          child: Image(
-                            image: AssetImage('images/STHAppIcon2.png'),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: SafeArea(
+        child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              iconTheme: IconThemeData(color: Colors.black),
+            ),
+            drawer: Drawer(
+              child: ListView(
+                children: [
+                  Container(
+                    height: 200,
+                    child: DrawerHeader(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 100,
+                            child: Image(
+                              image: AssetImage('images/STHAppIcon2.png'),
+                            ),
                           ),
+                          Text(
+                            "스몰 토크 헬퍼",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          Text(
+                            "small talk helper",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                      '인기 짱 대화 주제 TOP 10',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/topten');
+                    },
+                  ),
+                  ListTile(
+                    title: Text(
+                      '개발자에게 대화 주제 추천하기',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/users-sugguestion');
+                    },
+                  )
+                ],
+              ),
+            ),
+            body: Container(
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: FutureBuilder(
+                      future: sugguestion,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Sugguestion> snapshot) {
+                        if (snapshot.hasData) {
+                          return AnimatedSwitcher(
+                            duration: Duration(milliseconds: 300),
+                            transitionBuilder:
+                                (Widget child, Animation<double> animation) {
+                              return ScaleTransition(
+                                  child: child, scale: animation);
+                            },
+                            child: Container(
+                                key: ValueKey<int>(snapshot.data!.id),
+                                width: MediaQuery.of(context).size.width - 80,
+                                height: MediaQuery.of(context).size.height / 2,
+                                padding: EdgeInsets.all(10),
+                                margin: EdgeInsets.all(10),
+                                color: Colors.white,
+                                child: Center(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          snapshot.data!.sugguestionText,
+                                          style: TextStyle(
+                                            fontSize: 25,
+                                            height: 2,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )),
+                          );
+                        } else if (snapshot.hasError) {
+                          //print('${snapshot.error}');
+                          return Text("error");
+                        }
+                        return const CircularProgressIndicator();
+                      },
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width - 80,
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TextButton.icon(
+                          onPressed: _getSugguestionTap,
+                          icon: Icon(
+                            Icons.shuffle,
+                            size: 70,
+                            color: Colors.black,
+                          ),
+                          label: Text(""),
                         ),
-                        Text(
-                          "스몰 토크 헬퍼",
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Text(
-                          "small talk helper",
-                          style: TextStyle(fontSize: 16),
+                        FutureBuilder<bool>(
+                          future: _isLiked,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<bool> snapshot) {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return LikeButton(
+                                    size: 70,
+                                    isLiked: false,
+                                    likeBuilder: (bool isLiked) {
+                                      return Icon(
+                                        Icons.favorite,
+                                        color:
+                                            isLiked ? Colors.red : Colors.grey,
+                                        size: 70,
+                                      );
+                                    });
+                              default:
+                                if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else {
+                                  return LikeButton(
+                                    size: 70,
+                                    isLiked: snapshot.data,
+                                    circleColor: CircleColor(
+                                        start: Colors.black, end: Colors.red),
+                                    bubblesColor: BubblesColor(
+                                      dotPrimaryColor: Colors.grey,
+                                      dotSecondaryColor: Colors.black,
+                                    ),
+                                    likeBuilder: (bool isLiked) {
+                                      return Icon(
+                                        Icons.favorite,
+                                        color:
+                                            isLiked ? Colors.red : Colors.grey,
+                                        size: 70,
+                                      );
+                                    },
+                                    onTap: applyLikes,
+                                  );
+                                }
+                            }
+                          },
                         ),
                       ],
                     ),
                   ),
-                ),
-                ListTile(
-                  title: Text(
-                    '인기 짱 대화 주제 TOP 10',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: adWidget,
+                    width: banner.size.width.toDouble(),
+                    height: banner.size.height.toDouble(),
                   ),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/topten');
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    '개발자에게 대화 주제 추천하기',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/users-sugguestion');
-                  },
-                )
-              ],
-            ),
-          ),
-          body: Container(
-            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  child: FutureBuilder(
-                    future: sugguestion,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<Sugguestion> snapshot) {
-                      if (snapshot.hasData) {
-                        return AnimatedSwitcher(
-                          duration: Duration(milliseconds: 300),
-                          transitionBuilder:
-                              (Widget child, Animation<double> animation) {
-                            return ScaleTransition(
-                                child: child, scale: animation);
-                          },
-                          child: Container(
-                              key: ValueKey<int>(snapshot.data!.id),
-                              width: MediaQuery.of(context).size.width - 80,
-                              height: MediaQuery.of(context).size.height / 2,
-                              padding: EdgeInsets.all(10),
-                              margin: EdgeInsets.all(10),
-                              color: Colors.white,
-                              child: Center(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        snapshot.data!.sugguestionText,
-                                        style: TextStyle(
-                                          fontSize: 25,
-                                          height: 2,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )),
-                        );
-                      } else if (snapshot.hasError) {
-                        //print('${snapshot.error}');
-                        return Text("error");
-                      }
-                      return const CircularProgressIndicator();
-                    },
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width - 80,
-                  padding: EdgeInsets.all(10),
-                  margin: EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      TextButton.icon(
-                        onPressed: _getSugguestionTap,
-                        icon: Icon(
-                          Icons.shuffle,
-                          size: 70,
-                          color: Colors.black,
-                        ),
-                        label: Text(""),
-                      ),
-                      FutureBuilder<bool>(
-                        future: _isLiked,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<bool> snapshot) {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.waiting:
-                              return LikeButton(
-                                  size: 70,
-                                  isLiked: false,
-                                  likeBuilder: (bool isLiked) {
-                                    return Icon(
-                                      Icons.favorite,
-                                      color: isLiked ? Colors.red : Colors.grey,
-                                      size: 70,
-                                    );
-                                  });
-                            default:
-                              if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              } else {
-                                return LikeButton(
-                                  size: 70,
-                                  isLiked: snapshot.data,
-                                  circleColor: CircleColor(
-                                      start: Colors.black, end: Colors.red),
-                                  bubblesColor: BubblesColor(
-                                    dotPrimaryColor: Colors.grey,
-                                    dotSecondaryColor: Colors.black,
-                                  ),
-                                  likeBuilder: (bool isLiked) {
-                                    return Icon(
-                                      Icons.favorite,
-                                      color: isLiked ? Colors.red : Colors.grey,
-                                      size: 70,
-                                    );
-                                  },
-                                  onTap: applyLikes,
-                                );
-                              }
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  child: adWidget,
-                  width: banner.size.width.toDouble(),
-                  height: banner.size.height.toDouble(),
-                ),
-              ],
-            ),
-          )),
+                ],
+              ),
+            )),
+      ),
     );
   }
 }
