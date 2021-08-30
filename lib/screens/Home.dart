@@ -163,7 +163,7 @@ class _HomeState extends State<Home> {
                 child: new Text('아니오'),
               ),
               new TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () => exit(0),
                 child: new Text('네'),
               ),
             ],
