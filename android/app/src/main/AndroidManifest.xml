@@ -2,7 +2,7 @@
     package="com.example.small_talk_helper_app">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="small_talk_helper_app"
+        android:label="small talk helper"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
