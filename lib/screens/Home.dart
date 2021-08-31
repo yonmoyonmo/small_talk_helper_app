@@ -223,6 +223,17 @@ class _HomeState extends State<Home> {
                   ),
                   ListTile(
                     title: Text(
+                      '사랑에 빠지는 36가지 질문',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/love36');
+                    },
+                  ),
+                  ListTile(
+                    title: Text(
                       '개발자에게 대화 주제 추천하기',
                       style: TextStyle(
                         fontSize: 16,
