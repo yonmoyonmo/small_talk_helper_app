@@ -79,14 +79,14 @@ class _ToptenListState extends State<ToptenList> {
                             ),
                             title: Text(
                               '${snapshot.data!.sugguestions[index].sugguestionText}',
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16, height: 2),
                             ),
                           );
                         });
                   } else if (snapshot.hasError) {
                     return Text('${snapshot.error}');
                   }
-                  return const CircularProgressIndicator();
+                  return Center(child: const CircularProgressIndicator());
                 },
               ),
             )));

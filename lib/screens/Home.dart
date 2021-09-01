@@ -29,8 +29,10 @@ class _HomeState extends State<Home> {
   late Future<bool> _isLiked;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
+  //숨겨야 함
   final String iOSTestId = 'ca-app-pub-3940256099942544/2934735716';
   final String androidTestId = 'ca-app-pub-3940256099942544/6300978111';
+
   late BannerAd banner;
   late AdWidget adWidget;
   //late Container adContainer;
@@ -302,60 +304,86 @@ class _HomeState extends State<Home> {
                     padding: EdgeInsets.all(10),
                     margin: EdgeInsets.all(10),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TextButton.icon(
-                          onPressed: _getSugguestionTap,
-                          icon: Icon(
-                            Icons.shuffle,
-                            size: 70,
-                            color: Colors.black,
+                        Container(
+                          // decoration: BoxDecoration(
+                          //   border: Border.all(
+                          //     color: Colors.black,
+                          //     style: BorderStyle.solid,
+                          //     width: 1.0,
+                          //   ),
+                          // ),
+                          alignment: Alignment.centerLeft,
+                          width: 200,
+                          height: 100,
+                          child: TextButton.icon(
+                            onPressed: _getSugguestionTap,
+                            icon: Icon(
+                              Icons.shuffle,
+                              size: 70,
+                              color: Colors.black,
+                            ),
+                            label: Text(""),
                           ),
-                          label: Text(""),
                         ),
-                        FutureBuilder<bool>(
-                          future: _isLiked,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<bool> snapshot) {
-                            switch (snapshot.connectionState) {
-                              case ConnectionState.waiting:
-                                return LikeButton(
-                                    size: 70,
-                                    isLiked: false,
-                                    likeBuilder: (bool isLiked) {
-                                      return Icon(
-                                        Icons.favorite,
-                                        color:
-                                            isLiked ? Colors.red : Colors.grey,
-                                        size: 70,
-                                      );
-                                    });
-                              default:
-                                if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                } else {
+                        Container(
+                          // decoration: BoxDecoration(
+                          //   border: Border.all(
+                          //     color: Colors.black,
+                          //     style: BorderStyle.solid,
+                          //     width: 1.0,
+                          //   ),
+                          // ),
+                          alignment: Alignment.centerRight,
+                          width: 100,
+                          height: 100,
+                          child: FutureBuilder<bool>(
+                            future: _isLiked,
+                            builder: (BuildContext context,
+                                AsyncSnapshot<bool> snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.waiting:
                                   return LikeButton(
-                                    size: 70,
-                                    isLiked: snapshot.data,
-                                    circleColor: CircleColor(
-                                        start: Colors.black, end: Colors.red),
-                                    bubblesColor: BubblesColor(
-                                      dotPrimaryColor: Colors.grey,
-                                      dotSecondaryColor: Colors.black,
-                                    ),
-                                    likeBuilder: (bool isLiked) {
-                                      return Icon(
-                                        Icons.favorite,
-                                        color:
-                                            isLiked ? Colors.red : Colors.grey,
-                                        size: 70,
-                                      );
-                                    },
-                                    onTap: applyLikes,
-                                  );
-                                }
-                            }
-                          },
+                                      size: 70,
+                                      isLiked: false,
+                                      likeBuilder: (bool isLiked) {
+                                        return Icon(
+                                          Icons.favorite,
+                                          color: isLiked
+                                              ? Colors.red
+                                              : Colors.grey,
+                                          size: 70,
+                                        );
+                                      });
+                                default:
+                                  if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else {
+                                    return LikeButton(
+                                      size: 70,
+                                      isLiked: snapshot.data,
+                                      circleColor: CircleColor(
+                                          start: Colors.black, end: Colors.red),
+                                      bubblesColor: BubblesColor(
+                                        dotPrimaryColor: Colors.grey,
+                                        dotSecondaryColor: Colors.black,
+                                      ),
+                                      likeBuilder: (bool isLiked) {
+                                        return Icon(
+                                          Icons.favorite,
+                                          color: isLiked
+                                              ? Colors.red
+                                              : Colors.grey,
+                                          size: 70,
+                                        );
+                                      },
+                                      onTap: applyLikes,
+                                    );
+                                  }
+                              }
+                            },
+                          ),
                         ),
                       ],
                     ),

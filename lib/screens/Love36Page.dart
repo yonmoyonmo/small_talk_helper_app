@@ -73,21 +73,33 @@ class _Love36PageState extends State<Love36Page> {
                         padding: const EdgeInsets.all(8),
                         itemCount: snapshot.data!.sugguestions.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return ListTile(
-                            leading: Text(
-                              (index + 1).toString(),
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            title: Text(
-                              '${snapshot.data!.sugguestions[index].sugguestionText}',
-                              style: TextStyle(fontSize: 16),
+                          return Container(
+                            margin: EdgeInsets.all(10),
+                            alignment: Alignment.center,
+                            // decoration: BoxDecoration(
+                            //   border: Border(
+                            //     bottom: BorderSide(
+                            //       color: Colors.yellow,
+                            //       width: 1.0,
+                            //     ),
+                            //   ),
+                            // ),
+                            child: ListTile(
+                              leading: Text(
+                                (index + 1).toString(),
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              title: Text(
+                                '${snapshot.data!.sugguestions[index].sugguestionText}',
+                                style: TextStyle(fontSize: 16, height: 2),
+                              ),
                             ),
                           );
                         });
                   } else if (snapshot.hasError) {
                     return Text('${snapshot.error}');
                   }
-                  return const CircularProgressIndicator();
+                  return Center(child: const CircularProgressIndicator());
                 },
               ),
             )));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:small_talk_helper_app/screens/AnimatedSplashPage.dart';
+import 'package:small_talk_helper_app/screens/Favorite.dart';
 import 'package:small_talk_helper_app/screens/Home.dart';
 import 'package:small_talk_helper_app/screens/Love36Page.dart';
 import 'package:small_talk_helper_app/screens/ToptenList.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         '/topten': (context) => ToptenList(),
         '/users-sugguestion': (context) => UserSugguestion(),
         '/love36': (context) => Love36Page(),
+        '/favorite': (context) => Favorite(),
       },
     );
   }
