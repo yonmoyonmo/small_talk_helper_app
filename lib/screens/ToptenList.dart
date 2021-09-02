@@ -15,7 +15,7 @@ class ToptenList extends StatefulWidget {
 class _ToptenListState extends State<ToptenList> {
   late Future<SugguestionList> sugguestionList;
 
-  get colorCodes => null;
+  //get colorCodes => null;
 
   Future<SugguestionList> getRandomSugguestionList() async {
     try {

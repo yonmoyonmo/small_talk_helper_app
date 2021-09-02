@@ -16,9 +16,9 @@ class Love36Page extends StatefulWidget {
 class _Love36PageState extends State<Love36Page> {
   late Future<SugguestionList> sugguestionList;
 
-  get colorCodes => null;
+  //get colorCodes => null;
 
-  Future<SugguestionList> getRandomSugguestionList() async {
+  Future<SugguestionList> getLove36SugguestionList() async {
     try {
       final response =
           await http.get(new SmallTalkHelperEndpoint().getEndpoint("love36"));
@@ -45,7 +45,7 @@ class _Love36PageState extends State<Love36Page> {
   @override
   void initState() {
     super.initState();
-    sugguestionList = getRandomSugguestionList();
+    sugguestionList = getLove36SugguestionList();
   }
 
   @override

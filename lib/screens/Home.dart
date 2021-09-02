@@ -111,38 +111,74 @@ class _HomeState extends State<Home> {
       //print("preference key : " + prefs.containsKey('$sugguestionId').toString());
 
       if (liked) {
+        //unlike
         likeValue = -1;
         final response = await http.post(
             smallTalkHelperEndpoint.getEndpoint("likes"),
             body: jsonEncode(
                 {"sugguestionId": sugguestionId, "likeValue": likeValue}),
             headers: {"Content-Type": "application/json"});
+
         if (response.statusCode == 200) {
           setState(() {
             _isLiked =
                 prefs.setBool('$sugguestionId', false).then((bool result) {
-              //print("result : " + result.toString());
               return false;
             });
           });
+
+          var favoriteListYN = prefs.getStringList("favorite") ?? false;
+          //훼이보릿 리스트가 없으면 그냥 무시
+          if (favoriteListYN == false) {
+            return true;
+          }
+
+          var favList = prefs.getStringList("favorite");
+
+          for (int i = 0; i < favList!.length; i++) {
+            var element = favList[i];
+            if (element == '$sugguestionId') {
+              favList.removeAt(i);
+            }
+          }
+          var debug = await prefs.setStringList("favorite", favList);
+          print("home unlike : " + debug.toString());
+          print(favList);
           return true;
         } else {
           throw Exception("failed to apply user's like");
         }
       } else {
+        //like
         final response = await http.post(
             smallTalkHelperEndpoint.getEndpoint("likes"),
             body: jsonEncode(
                 {"sugguestionId": sugguestionId, "likeValue": likeValue}),
             headers: {"Content-Type": "application/json"});
+
         if (response.statusCode == 200) {
           setState(() {
             _isLiked =
                 prefs.setBool('$sugguestionId', true).then((bool result) {
-              //print("result : " + result.toString());
               return true;
             });
           });
+
+          var favoriteListYN = prefs.getStringList("favorite") ?? false;
+          //최초생성의 경우 새로 리스트 세팅
+          if (favoriteListYN == false) {
+            List<String> newFavList = [];
+            newFavList.add('$sugguestionId');
+            await prefs.setStringList("favorite", newFavList);
+            return true;
+          }
+          //아니면 걍 ㄱ
+          var favList = prefs.getStringList("favorite");
+          favList!.add('$sugguestionId');
+
+          var debug = await prefs.setStringList("favorite", favList);
+          print("home like : " + debug.toString());
+          print(favList);
           return true;
         } else {
           throw Exception("failed to apply user's like");
@@ -221,6 +257,17 @@ class _HomeState extends State<Home> {
                     ),
                     onTap: () {
                       Navigator.pushNamed(context, '/topten');
+                    },
+                  ),
+                  ListTile(
+                    title: Text(
+                      '하트 누른 대화 주제',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/favorite');
                     },
                   ),
                   ListTile(
@@ -307,13 +354,6 @@ class _HomeState extends State<Home> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          // decoration: BoxDecoration(
-                          //   border: Border.all(
-                          //     color: Colors.black,
-                          //     style: BorderStyle.solid,
-                          //     width: 1.0,
-                          //   ),
-                          // ),
                           alignment: Alignment.centerLeft,
                           width: 200,
                           height: 100,
@@ -328,13 +368,6 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         Container(
-                          // decoration: BoxDecoration(
-                          //   border: Border.all(
-                          //     color: Colors.black,
-                          //     style: BorderStyle.solid,
-                          //     width: 1.0,
-                          //   ),
-                          // ),
                           alignment: Alignment.centerRight,
                           width: 100,
                           height: 100,
