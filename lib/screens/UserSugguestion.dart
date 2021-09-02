@@ -206,12 +206,13 @@ class _UserSugguestionState extends State<UserSugguestion> {
   Future<bool> _sendSugguestion() async {
     try {
       final response = await http.post(
-          new SmallTalkHelperEndpoint().getEndpoint("users-sugguestion"),
-          body: jsonEncode({
-            "userName": userNameController.text,
-            "text": userSugguestionController.text
-          }),
-          headers: {"Content-Type": "application/json"});
+        new SmallTalkHelperEndpoint().getEndpoint("users-sugguestion"),
+        body: jsonEncode({
+          "userName": userNameController.text,
+          "text": userSugguestionController.text
+        }),
+        headers: {"Content-Type": "application/json"},
+      );
       if (response.statusCode == 200) {
         return true;
       } else {

@@ -3,7 +3,7 @@ class SmallTalkHelperEndpoint {
       "https://small-talk-helper.wonmonae.com/api/sugguestion/small-talk-helper/";
 
   // final String host =
-  //     "http://172.30.1.25:5000/api/sugguestion/small-talk-helper/";
+  //     "http://172.30.1.4:5000/api/sugguestion/small-talk-helper/";
 
   Uri getEndpoint(String endpointName) {
     String uri = this.host + endpointName;

@@ -261,7 +261,7 @@ class _HomeState extends State<Home> {
                   ),
                   ListTile(
                     title: Text(
-                      '하트 누른 대화 주제',
+                      '즐겨찾기',
                       style: TextStyle(
                         fontSize: 16,
                       ),

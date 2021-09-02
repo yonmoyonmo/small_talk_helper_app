@@ -18,12 +18,22 @@ class _FavoriteState extends State<Favorite> {
   late Future<SugguestionList> sugguestionList;
 
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  var favList = [];
+  late var sugguestionId;
 
-  Future<SugguestionList> getRandomSugguestionList() async {
+  @override
+  void initState() {
+    super.initState();
+    sugguestionList = getFavoriteSugguestionList();
+  }
+
+  Future<SugguestionList> getFavoriteSugguestionList() async {
+    SharedPreferences prefs = await _prefs;
+    var tmpList = prefs.getStringList("favorite");
     try {
-      final response =
-          await http.get(new SmallTalkHelperEndpoint().getEndpoint("topten"));
+      final response = await http.post(
+          new SmallTalkHelperEndpoint().getEndpoint("favorite"),
+          body: jsonEncode({"favoriteList": tmpList ?? []}),
+          headers: {"Content-Type": "application/json"});
       if (response.statusCode == 200) {
         return SugguestionList.fromJson(jsonDecode(response.body));
       } else {
@@ -44,19 +54,34 @@ class _FavoriteState extends State<Favorite> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _prefs.then((SharedPreferences prefs) {
-      if (prefs.getStringList("favorite") != null) {
-        print("있음");
-        print(prefs.getStringList("favorite"));
-        favList = prefs.getStringList("favorite")!;
-      } else {
-        favList = [];
+  void applyLikes() async {
+    try {
+      final SharedPreferences prefs = await _prefs;
+
+      final response = await http.post(
+          new SmallTalkHelperEndpoint().getEndpoint("likes"),
+          body: jsonEncode({"sugguestionId": sugguestionId, "likeValue": -1}),
+          headers: {"Content-Type": "application/json"});
+
+      if (response.statusCode == 200) {
+        var favList = prefs.getStringList("favorite");
+        for (int i = 0; i < favList!.length; i++) {
+          var element = favList[i];
+          if (element == '$sugguestionId') {
+            favList.removeAt(i);
+          }
+        }
+        await prefs.setBool('$sugguestionId', false);
+        var debug = await prefs.setStringList("favorite", favList);
+        print("favorite unlike : " + debug.toString());
+        print(favList);
+        setState(() {
+          sugguestionList = getFavoriteSugguestionList();
+        });
       }
-    });
-    sugguestionList = getRandomSugguestionList();
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -75,19 +100,29 @@ class _FavoriteState extends State<Favorite> {
                 builder: (BuildContext context,
                     AsyncSnapshot<SugguestionList> snapshot) {
                   if (snapshot.hasData) {
-                    for (int i = 0;
-                        i < snapshot.data!.sugguestions.length;
-                        i++) {
-                      //print(snapshot.data!.sugguestions[i].sugguestionText);
+                    if (snapshot.data!.sugguestions.length == 0) {
+                      return Center(
+                        child: Text(
+                          "아직 하트를 누른 대화 주제가 하나도 없어염!",
+                          style: TextStyle(fontSize: 16, height: 2),
+                        ),
+                      );
                     }
                     return ListView.builder(
                         padding: const EdgeInsets.all(8),
                         itemCount: snapshot.data!.sugguestions.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
-                            leading: Text(
-                              (index + 1).toString(),
-                              style: TextStyle(fontSize: 16),
+                            trailing: TextButton(
+                              onPressed: () {
+                                print("000000");
+                                setState(() {
+                                  sugguestionId =
+                                      snapshot.data!.sugguestions[index].id;
+                                });
+                                applyLikes();
+                              },
+                              child: Text("제거"),
                             ),
                             title: Text(
                               '${snapshot.data!.sugguestions[index].sugguestionText}',
