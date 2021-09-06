@@ -29,7 +29,6 @@ class _HomeState extends State<Home> {
   late Future<bool> _isLiked;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  //숨겨야 함
   final String iOSTestId = 'ca-app-pub-3940256099942544/2934735716';
   final String androidTestId = 'ca-app-pub-3940256099942544/6300978111';
 
