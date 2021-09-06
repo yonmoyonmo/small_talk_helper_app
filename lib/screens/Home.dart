@@ -11,6 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import 'package:small_talk_helper_app/utils/consumable_store.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -29,12 +31,12 @@ class _HomeState extends State<Home> {
   late Future<bool> _isLiked;
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  final String iOSTestId = 'ca-app-pub-3940256099942544/2934735716';
-  final String androidTestId = 'ca-app-pub-3940256099942544/6300978111';
+  final String iOSTestId = 'ca-app-pub-4829575790302011/4670694677';
+  final String androidTestId = 'ca-app-pub-4829575790302011/4698614837';
 
   late BannerAd banner;
   late AdWidget adWidget;
-  //late Container adContainer;
+  late Future<bool> isDonator;
 
   @override
   void initState() {
@@ -54,14 +56,8 @@ class _HomeState extends State<Home> {
 
     adWidget = AdWidget(ad: banner);
 
-    // adContainer = Container(
-    //   alignment: Alignment.center,
-    //   child: adWidget,
-    //   width: banner.size.width.toDouble(),
-    //   height: banner.size.height.toDouble(),
-    // );
-
     sugguestion = getRandomSugguestion();
+    isDonator = ConsumableStore.isDonator();
   }
 
   Future<Sugguestion> getRandomSugguestion() async {
@@ -73,9 +69,9 @@ class _HomeState extends State<Home> {
         setState(() {
           sugguestionId = result.id;
           _isLiked = _prefs.then((SharedPreferences prefs) {
-            //print(sugguestionId);
             return prefs.getBool('$sugguestionId') ?? false;
           });
+          isDonator = ConsumableStore.isDonator();
         });
         return result;
       } else {
@@ -290,6 +286,17 @@ class _HomeState extends State<Home> {
                     onTap: () {
                       Navigator.pushNamed(context, '/users-sugguestion');
                     },
+                  ),
+                  ListTile(
+                    title: Text(
+                      '개발자의 구걸 깡통 구경하기',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/donate');
+                    },
                   )
                 ],
               ),
@@ -421,11 +428,41 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   Container(
-                    alignment: Alignment.center,
-                    child: adWidget,
-                    width: banner.size.width.toDouble(),
-                    height: banner.size.height.toDouble(),
-                  ),
+                    child: FutureBuilder<bool>(
+                      future: isDonator,
+                      builder:
+                          (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                        if (snapshot.hasData) {
+                          print(snapshot.data);
+                          if (snapshot.data == false) {
+                            print("광고진행중");
+                            return Container(
+                              alignment: Alignment.center,
+                              child: adWidget,
+                              width: banner.size.width.toDouble(),
+                              height: banner.size.height.toDouble(),
+                            );
+                          } else if (snapshot.data == true) {
+                            return Container();
+                          }
+                        } else if (snapshot.hasError) {
+                          print("에라 home:442");
+                          return Container(
+                            child: Text("error"),
+                          );
+                        }
+                        return Container(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    ),
+                  )
+                  // Container(
+                  //   alignment: Alignment.center,
+                  //   child: adWidget,
+                  //   width: banner.size.width.toDouble(),
+                  //   height: banner.size.height.toDouble(),
+                  // ),
                 ],
               ),
             )),
