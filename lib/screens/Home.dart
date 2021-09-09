@@ -235,6 +235,7 @@ class _HomeState extends State<Home> {
                       children: [
                         Container(
                           height: 100,
+                          margin: EdgeInsets.all(10),
                           child: Image(
                             image: AssetImage('images/STHAppIcon2.png'),
                           ),
@@ -253,17 +254,6 @@ class _HomeState extends State<Home> {
                 ),
                 ListTile(
                   title: Text(
-                    '인기 짱 대화 주제 TOP 10',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/topten');
-                  },
-                ),
-                ListTile(
-                  title: Text(
                     '즐겨찾기',
                     style: TextStyle(
                       fontSize: 16,
@@ -271,6 +261,17 @@ class _HomeState extends State<Home> {
                   ),
                   onTap: () {
                     Navigator.pushNamed(context, '/favorite');
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    '인기 짱 대화 주제 TOP 10',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/topten');
                   },
                 ),
                 ListTile(
