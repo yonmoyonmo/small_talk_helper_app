@@ -305,7 +305,18 @@ class _HomeState extends State<Home> {
                   onTap: () {
                     Navigator.pushNamed(context, '/donate');
                   },
-                )
+                ),
+                ListTile(
+                  title: Text(
+                    '앱 삭제 시 읽어봐야 할 글',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/about');
+                  },
+                ),
               ],
             ),
           ),

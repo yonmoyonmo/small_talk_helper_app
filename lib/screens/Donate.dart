@@ -135,6 +135,13 @@ class _DonateState extends State<Donate> {
       stack.add(
         ListView(
           children: [
+            Container(
+              padding: EdgeInsets.all(20),
+              width: MediaQuery.of(context).size.width / 2,
+              child: Image(
+                image: AssetImage('images/baggerWonmo.png'),
+              ),
+            ),
             _buildConnectionCheckTile(),
             _buildProductList(),
           ],
@@ -177,7 +184,7 @@ class _DonateState extends State<Donate> {
     }
     final Widget storeHeader = ListTile(
       leading: Icon(_isAvailable ? Icons.check : Icons.block,
-          color: _isAvailable ? Colors.green : ThemeData.light().errorColor),
+          color: _isAvailable ? Colors.black : ThemeData.light().errorColor),
       title: Text('개발자의 구걸 깡통이 ' +
           (_isAvailable ? '열렸습니다!' : '사라졌습니다... 누가 발로 찼어?') +
           '!'),
@@ -230,7 +237,7 @@ class _DonateState extends State<Donate> {
           trailing: TextButton(
             child: Text(productDetails.price),
             style: TextButton.styleFrom(
-              backgroundColor: Colors.green[800],
+              backgroundColor: Colors.black,
               primary: Colors.white,
             ),
             onPressed: () {

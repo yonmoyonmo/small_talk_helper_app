@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:small_talk_helper_app/screens/About.dart';
 import 'package:small_talk_helper_app/screens/AnimatedSplashPage.dart';
 import 'package:small_talk_helper_app/screens/Donate.dart';
 import 'package:small_talk_helper_app/screens/Favorite.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/love36': (context) => Love36Page(),
         '/favorite': (context) => Favorite(),
         '/donate': (context) => Donate(),
+        '/about': (context) => About(),
       },
     );
   }
