@@ -8,10 +8,7 @@ import 'package:small_talk_helper_app/payloads/sugguestion.dart';
 import 'package:small_talk_helper_app/utils/SmallTalkHelperEndpoint.dart';
 import 'package:like_button/like_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
-import 'package:small_talk_helper_app/utils/consumable_store.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -57,7 +54,18 @@ class _HomeState extends State<Home> {
     adWidget = AdWidget(ad: banner);
 
     sugguestion = getRandomSugguestion();
-    isDonator = ConsumableStore.isDonator();
+    isDonator = donatorCheck();
+  }
+
+  Future<bool> donatorCheck() async {
+    final SharedPreferences prefs = await _prefs;
+    int flag = prefs.getInt("isDonator") ?? 0;
+    print("donator check = " + flag.toString());
+    if (flag == 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<Sugguestion> getRandomSugguestion() async {
@@ -71,7 +79,7 @@ class _HomeState extends State<Home> {
           _isLiked = _prefs.then((SharedPreferences prefs) {
             return prefs.getBool('$sugguestionId') ?? false;
           });
-          isDonator = ConsumableStore.isDonator();
+          isDonator = donatorCheck();
         });
         return result;
       } else {
@@ -102,8 +110,9 @@ class _HomeState extends State<Home> {
       final SharedPreferences prefs = await _prefs;
       int likeValue = 1;
 
-      //print("liked : " + liked.toString());
-      //print("preference key : " + prefs.containsKey('$sugguestionId').toString());
+      // print("liked : " + liked.toString());
+      // print(
+      //     "preference key : " + prefs.containsKey('$sugguestionId').toString());
 
       if (liked) {
         //unlike
@@ -129,7 +138,7 @@ class _HomeState extends State<Home> {
           }
 
           var favList = prefs.getStringList("favorite");
-
+          print("debug unlike 01 : " + favList.toString());
           for (int i = 0; i < favList!.length; i++) {
             var element = favList[i];
             if (element == '$sugguestionId') {
@@ -138,7 +147,6 @@ class _HomeState extends State<Home> {
           }
           var debug = await prefs.setStringList("favorite", favList);
           print("home unlike : " + debug.toString());
-          print(favList);
           return true;
         } else {
           throw Exception("failed to apply user's like");
@@ -169,11 +177,11 @@ class _HomeState extends State<Home> {
           }
           //아니면 걍 ㄱ
           var favList = prefs.getStringList("favorite");
+          print("debug like 01 : " + favList.toString());
           favList!.add('$sugguestionId');
 
           var debug = await prefs.setStringList("favorite", favList);
           print("home like : " + debug.toString());
-          print(favList);
           return true;
         } else {
           throw Exception("failed to apply user's like");
@@ -211,261 +219,260 @@ class _HomeState extends State<Home> {
       onWillPop: _onWillPop,
       child: SafeArea(
         child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              elevation: 0,
-              iconTheme: IconThemeData(color: Colors.black),
-            ),
-            drawer: Drawer(
-              child: ListView(
-                children: [
-                  Container(
-                    height: 200,
-                    child: DrawerHeader(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 100,
-                            child: Image(
-                              image: AssetImage('images/STHAppIcon2.png'),
-                            ),
-                          ),
-                          Text(
-                            "스몰 토크 헬퍼",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          Text(
-                            "small talk helper",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  ListTile(
-                    title: Text(
-                      '인기 짱 대화 주제 TOP 10',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/topten');
-                    },
-                  ),
-                  ListTile(
-                    title: Text(
-                      '즐겨찾기',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/favorite');
-                    },
-                  ),
-                  ListTile(
-                    title: Text(
-                      '사랑에 빠지는 36가지 질문',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/love36');
-                    },
-                  ),
-                  ListTile(
-                    title: Text(
-                      '개발자에게 대화 주제 추천하기',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/users-sugguestion');
-                    },
-                  ),
-                  ListTile(
-                    title: Text(
-                      '개발자의 구걸 깡통 구경하기',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/donate');
-                    },
-                  )
-                ],
-              ),
-            ),
-            body: Container(
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    child: FutureBuilder(
-                      future: sugguestion,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<Sugguestion> snapshot) {
-                        if (snapshot.hasData) {
-                          return AnimatedSwitcher(
-                            duration: Duration(milliseconds: 300),
-                            transitionBuilder:
-                                (Widget child, Animation<double> animation) {
-                              return ScaleTransition(
-                                  child: child, scale: animation);
-                            },
-                            child: Container(
-                                key: ValueKey<int>(snapshot.data!.id),
-                                width: MediaQuery.of(context).size.width - 80,
-                                height: MediaQuery.of(context).size.height / 2,
-                                padding: EdgeInsets.all(10),
-                                margin: EdgeInsets.all(10),
-                                color: Colors.white,
-                                child: Center(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          snapshot.data!.sugguestionText,
-                                          style: TextStyle(
-                                            fontSize: 25,
-                                            height: 2,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )),
-                          );
-                        } else if (snapshot.hasError) {
-                          //print('${snapshot.error}');
-                          return Text("error");
-                        }
-                        return const CircularProgressIndicator();
-                      },
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width - 80,
-                    padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.all(10),
-                    child: Row(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            iconTheme: IconThemeData(color: Colors.black),
+          ),
+          drawer: Drawer(
+            child: ListView(
+              children: [
+                Container(
+                  height: 200,
+                  child: DrawerHeader(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          alignment: Alignment.centerLeft,
-                          width: 200,
                           height: 100,
-                          child: TextButton.icon(
-                            onPressed: _getSugguestionTap,
-                            icon: Icon(
-                              Icons.shuffle,
-                              size: 70,
-                              color: Colors.black,
-                            ),
-                            label: Text(""),
+                          child: Image(
+                            image: AssetImage('images/STHAppIcon2.png'),
                           ),
                         ),
-                        Container(
-                          alignment: Alignment.centerRight,
-                          width: 100,
-                          height: 100,
-                          child: FutureBuilder<bool>(
-                            future: _isLiked,
-                            builder: (BuildContext context,
-                                AsyncSnapshot<bool> snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.waiting:
-                                  return LikeButton(
-                                      size: 70,
-                                      isLiked: false,
-                                      likeBuilder: (bool isLiked) {
-                                        return Icon(
-                                          Icons.favorite,
-                                          color: isLiked
-                                              ? Colors.red
-                                              : Colors.grey,
-                                          size: 70,
-                                        );
-                                      });
-                                default:
-                                  if (snapshot.hasError) {
-                                    return Text('Error: ${snapshot.error}');
-                                  } else {
-                                    return LikeButton(
-                                      size: 70,
-                                      isLiked: snapshot.data,
-                                      circleColor: CircleColor(
-                                          start: Colors.black, end: Colors.red),
-                                      bubblesColor: BubblesColor(
-                                        dotPrimaryColor: Colors.grey,
-                                        dotSecondaryColor: Colors.black,
-                                      ),
-                                      likeBuilder: (bool isLiked) {
-                                        return Icon(
-                                          Icons.favorite,
-                                          color: isLiked
-                                              ? Colors.red
-                                              : Colors.grey,
-                                          size: 70,
-                                        );
-                                      },
-                                      onTap: applyLikes,
-                                    );
-                                  }
-                              }
-                            },
-                          ),
+                        Text(
+                          "스몰 토크 헬퍼",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Text(
+                          "small talk helper",
+                          style: TextStyle(fontSize: 16),
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    child: FutureBuilder<bool>(
-                      future: isDonator,
-                      builder:
-                          (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                        if (snapshot.hasData) {
-                          print(snapshot.data);
-                          if (snapshot.data == false) {
-                            print("광고진행중");
-                            return Container(
-                              alignment: Alignment.center,
-                              child: adWidget,
-                              width: banner.size.width.toDouble(),
-                              height: banner.size.height.toDouble(),
-                            );
-                          } else if (snapshot.data == true) {
-                            return Container();
-                          }
-                        } else if (snapshot.hasError) {
-                          print("에라 home:442");
-                          return Container(
-                            child: Text("error"),
-                          );
-                        }
-                        return Container(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
+                ),
+                ListTile(
+                  title: Text(
+                    '인기 짱 대화 주제 TOP 10',
+                    style: TextStyle(
+                      fontSize: 16,
                     ),
-                  )
-                  // Container(
-                  //   alignment: Alignment.center,
-                  //   child: adWidget,
-                  //   width: banner.size.width.toDouble(),
-                  //   height: banner.size.height.toDouble(),
-                  // ),
-                ],
-              ),
-            )),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/topten');
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    '즐겨찾기',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/favorite');
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    '사랑에 빠지는 36가지 질문',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/love36');
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    '개발자에게 대화 주제 추천하기',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/users-sugguestion');
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    '개발자의 구걸 깡통 구경하기',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/donate');
+                  },
+                )
+              ],
+            ),
+          ),
+          body: Container(
+            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  child: FutureBuilder(
+                    future: sugguestion,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<Sugguestion> snapshot) {
+                      if (snapshot.hasData) {
+                        return AnimatedSwitcher(
+                          duration: Duration(milliseconds: 300),
+                          transitionBuilder:
+                              (Widget child, Animation<double> animation) {
+                            return ScaleTransition(
+                                child: child, scale: animation);
+                          },
+                          child: Container(
+                              key: ValueKey<int>(snapshot.data!.id),
+                              width: MediaQuery.of(context).size.width - 80,
+                              height: MediaQuery.of(context).size.height / 2,
+                              padding: EdgeInsets.all(10),
+                              margin: EdgeInsets.all(10),
+                              color: Colors.white,
+                              child: Center(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        snapshot.data!.sugguestionText,
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          height: 2,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("error");
+                      }
+                      return const CircularProgressIndicator();
+                    },
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width - 80,
+                  padding: EdgeInsets.all(10),
+                  margin: EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        width: MediaQuery.of(context).size.width / 3,
+                        height: 100,
+                        child: TextButton.icon(
+                          onPressed: _getSugguestionTap,
+                          icon: Icon(
+                            Icons.shuffle,
+                            size: 70,
+                            color: Colors.black,
+                          ),
+                          label: Text(""),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        width: MediaQuery.of(context).size.width / 3,
+                        height: 100,
+                        child: FutureBuilder<bool>(
+                          future: _isLiked,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<bool> snapshot) {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return LikeButton(
+                                    size: 70,
+                                    isLiked: false,
+                                    likeBuilder: (bool isLiked) {
+                                      return Icon(
+                                        Icons.favorite,
+                                        color:
+                                            isLiked ? Colors.red : Colors.grey,
+                                        size: 70,
+                                      );
+                                    });
+                              default:
+                                if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else {
+                                  return LikeButton(
+                                    size: 70,
+                                    isLiked: snapshot.data,
+                                    circleColor: CircleColor(
+                                        start: Colors.black, end: Colors.red),
+                                    bubblesColor: BubblesColor(
+                                      dotPrimaryColor: Colors.grey,
+                                      dotSecondaryColor: Colors.black,
+                                    ),
+                                    likeBuilder: (bool isLiked) {
+                                      return Icon(
+                                        Icons.favorite,
+                                        color:
+                                            isLiked ? Colors.red : Colors.grey,
+                                        size: 70,
+                                      );
+                                    },
+                                    onTap: applyLikes,
+                                  );
+                                }
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: FutureBuilder<bool>(
+                    future: isDonator,
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (snapshot.hasData) {
+                        print("isDonator? : " + snapshot.data.toString());
+                        if (snapshot.data == false) {
+                          print("광고진행중");
+                          return Container(
+                            alignment: Alignment.center,
+                            child: adWidget,
+                            width: banner.size.width.toDouble(),
+                            height: banner.size.height.toDouble(),
+                          );
+                        } else if (snapshot.data == true) {
+                          print("광고 제거됨");
+                          return Container();
+                        }
+                      } else if (snapshot.hasError) {
+                        print("error : isDonator futurebuilder sibal");
+                        return Container(
+                          child: Text("error"),
+                        );
+                      }
+                      return Container(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  ),
+                )
+                // Container(
+                //   alignment: Alignment.center,
+                //   child: adWidget,
+                //   width: banner.size.width.toDouble(),
+                //   height: banner.size.height.toDouble(),
+                // ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

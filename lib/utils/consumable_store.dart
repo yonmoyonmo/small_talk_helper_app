@@ -21,17 +21,6 @@ class ConsumableStore {
         [];
   }
 
-  static Future<bool> isDonator() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? list = prefs.getStringList(_kPrefKey);
-    print("Consumable list\n" + list.toString());
-    if (list == null) return false;
-    if (list.isEmpty)
-      return false;
-    else
-      return true;
-  }
-
   static Future<void> _doSave(String id) async {
     List<String> cached = await load();
     SharedPreferences prefs = await SharedPreferences.getInstance();

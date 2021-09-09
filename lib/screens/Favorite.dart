@@ -29,6 +29,7 @@ class _FavoriteState extends State<Favorite> {
   Future<SugguestionList> getFavoriteSugguestionList() async {
     SharedPreferences prefs = await _prefs;
     var tmpList = prefs.getStringList("favorite");
+    print("favorite debug : " + tmpList.toString());
     try {
       final response = await http.post(
           new SmallTalkHelperEndpoint().getEndpoint("favorite"),

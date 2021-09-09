@@ -8,6 +8,7 @@ import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_ios/in_app_purchase_ios.dart';
 import 'package:in_app_purchase_ios/store_kit_wrappers.dart';
 import 'package:small_talk_helper_app/utils/consumable_store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const bool _kAutoConsume = true;
 
@@ -34,6 +35,9 @@ class _DonateState extends State<Donate> {
   bool _purchasePending = false;
   bool _loading = true;
   String? _queryProductError;
+
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  //여기서부터 하면 댐
 
   @override
   void initState() {
@@ -289,6 +293,10 @@ class _DonateState extends State<Donate> {
     // IMPORTANT!! Always verify purchase details before delivering the product.
     if (purchaseDetails.productID == _kConsumableId) {
       await ConsumableStore.save(purchaseDetails.purchaseID!);
+      final SharedPreferences prefs = await _prefs;
+      //왜인지 리스트를 여러개 쓰니 하나씩 이상해짐
+      //불값도 이미 쓰고 있으니 인트로 해본다
+      await prefs.setInt("isDonator", 1);
 
       List<String> consumables = await ConsumableStore.load();
       showAlertDialog(context);
