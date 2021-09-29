@@ -220,7 +220,7 @@ class _DonateState extends State<Donate> {
       productList.add(ListTile(
           title: Text('[${_notFoundIds.join(", ")}] not found',
               style: TextStyle(color: ThemeData.light().errorColor)),
-          subtitle: Text('플레이 스토어 연결에 문제가 생겼습니다...')));
+          subtitle: Text('스토어 연결에 문제가 생겼습니다...')));
     }
 
     productList.addAll(_products.map(
