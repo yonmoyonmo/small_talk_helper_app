@@ -45,15 +45,11 @@ class _AboutState extends State<About> {
                     style: TextStyle(fontSize: 16, height: 2),
                   ),
                   Text(
-                    "아니 이 개발자놈이 왜 삭제하면 다 초기화되게 만들었을까요?!!",
+                    "아니 이 개발자놈이 왜 삭제하면 다 초기화되게 만들었을까요?",
                     style: TextStyle(fontSize: 16, height: 2),
                   ),
                   Text(
-                    "그 이유는 바로바로...",
-                    style: TextStyle(fontSize: 16, height: 2),
-                  ),
-                  Text(
-                    "거지 개발자의 서버 비용 절약이었습니다! 여러분들께서 많은 성원으로 응원해 주신다면 앱 삭제로 초기화되지 않도록 해보겠습니다!\n",
+                    "그 이유는 바로 서버에 여러분들의 데이터를 저장하지 않기 때문이지요!",
                     style: TextStyle(fontSize: 16, height: 2),
                   ),
                   Text(

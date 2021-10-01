@@ -130,14 +130,31 @@ class _DonateState extends State<Donate> {
 
   @override
   Widget build(BuildContext context) {
+    BoxDecoration boxDeco = BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20)),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.1),
+          spreadRadius: 10,
+          blurRadius: 10,
+          offset: Offset(0, 3), // changes position of shadow
+        ),
+      ],
+    );
+
     List<Widget> stack = [];
     if (_queryProductError == null) {
       stack.add(
         ListView(
           children: [
             Container(
-              padding: EdgeInsets.all(20),
-              width: MediaQuery.of(context).size.width / 2,
+              decoration: boxDeco,
+              margin: EdgeInsets.all(40),
               child: Image(
                 image: AssetImage('images/baggerWonmo.png'),
               ),
@@ -197,7 +214,7 @@ class _DonateState extends State<Donate> {
         ListTile(
           title: Text('Not connected',
               style: TextStyle(color: ThemeData.light().errorColor)),
-          subtitle: const Text('플레이 스토어 연결에 문제가 생겼습니다...'),
+          subtitle: const Text('스토어 연결에 문제가 생겼습니다...'),
         ),
       ]);
     }
@@ -227,11 +244,11 @@ class _DonateState extends State<Donate> {
       (ProductDetails productDetails) {
         return ListTile(
           title: Text(
-            "백수 개발자에게 삼각김밥 하나 사주기",
+            "한 푼 주기",
             style: TextStyle(height: 2),
           ),
           subtitle: Text(
-            "배고픈 개발자에게 삼각김밥이라도 하나 사 줍니다.",
+            "효과 : 자비로운 마음씨로 인해 광고가 제거됩니다.",
             style: TextStyle(height: 2),
           ),
           trailing: TextButton(
@@ -275,7 +292,7 @@ class _DonateState extends State<Donate> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('감사합니다 선생님!'),
+          title: Text('감사합니다!'),
           content: Text("열심히 살겠습니다!"),
           actions: <Widget>[
             TextButton(

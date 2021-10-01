@@ -215,6 +215,23 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    BoxDecoration boxDeco = BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20)),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.1),
+          spreadRadius: 10,
+          blurRadius: 10,
+          offset: Offset(0, 3), // changes position of shadow
+        ),
+      ],
+    );
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: SafeArea(
@@ -228,18 +245,11 @@ class _HomeState extends State<Home> {
             child: ListView(
               children: [
                 Container(
-                  height: 200,
+                  height: 100,
                   child: DrawerHeader(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          height: 100,
-                          margin: EdgeInsets.all(10),
-                          child: Image(
-                            image: AssetImage('images/STHAppIcon2.png'),
-                          ),
-                        ),
                         Text(
                           "스몰 토크 헬퍼",
                           style: TextStyle(fontSize: 20),
@@ -276,7 +286,7 @@ class _HomeState extends State<Home> {
                 ),
                 ListTile(
                   title: Text(
-                    '사랑에 빠지는 36가지 질문',
+                    '사랑에 빠져드는 36가지 질문',
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -328,6 +338,40 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
+                  padding: EdgeInsets.all(20),
+                  child: FutureBuilder<bool>(
+                    future: isDonator,
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (snapshot.hasData) {
+                        print("isDonator? : " + snapshot.data.toString());
+                        if (snapshot.data == false) {
+                          //print("광고진행중");
+                          return Container(
+                            alignment: Alignment.center,
+                            child: adWidget,
+                            width: banner.size.width.toDouble(),
+                            height: banner.size.height.toDouble(),
+                          );
+                        } else if (snapshot.data == true) {
+                          //print("광고 제거됨");
+                          return Container();
+                        }
+                      } else if (snapshot.hasError) {
+                        //print("error : isDonator futurebuilder sibal");
+                        return Container(
+                          child: Text("error"),
+                        );
+                      }
+                      return Container(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width - 80,
+                  decoration: boxDeco,
                   child: FutureBuilder(
                     future: sugguestion,
                     builder: (BuildContext context,
@@ -372,6 +416,7 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 Container(
+                  decoration: boxDeco,
                   width: MediaQuery.of(context).size.width - 80,
                   padding: EdgeInsets.all(10),
                   margin: EdgeInsets.all(10),
@@ -444,37 +489,7 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                 ),
-                Container(
-                  child: FutureBuilder<bool>(
-                    future: isDonator,
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (snapshot.hasData) {
-                        print("isDonator? : " + snapshot.data.toString());
-                        if (snapshot.data == false) {
-                          print("광고진행중");
-                          return Container(
-                            alignment: Alignment.center,
-                            child: adWidget,
-                            width: banner.size.width.toDouble(),
-                            height: banner.size.height.toDouble(),
-                          );
-                        } else if (snapshot.data == true) {
-                          print("광고 제거됨");
-                          return Container();
-                        }
-                      } else if (snapshot.hasError) {
-                        print("error : isDonator futurebuilder sibal");
-                        return Container(
-                          child: Text("error"),
-                        );
-                      }
-                      return Container(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                  ),
-                )
+
                 // Container(
                 //   alignment: Alignment.center,
                 //   child: adWidget,
