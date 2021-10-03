@@ -317,17 +317,17 @@ class _HomeState extends State<Home> {
                     Navigator.pushNamed(context, '/donate');
                   },
                 ),
-                ListTile(
-                  title: Text(
-                    '앱 삭제 시 읽어봐야 할 글',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/about');
-                  },
-                ),
+                // ListTile(
+                //   title: Text(
+                //     '앱 삭제 시 읽어봐야 할 글',
+                //     style: TextStyle(
+                //       fontSize: 16,
+                //     ),
+                //   ),
+                //   onTap: () {
+                //     Navigator.pushNamed(context, '/about');
+                //   },
+                // ),
               ],
             ),
           ),
@@ -337,38 +337,6 @@ class _HomeState extends State<Home> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  padding: EdgeInsets.all(20),
-                  child: FutureBuilder<bool>(
-                    future: isDonator,
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (snapshot.hasData) {
-                        print("isDonator? : " + snapshot.data.toString());
-                        if (snapshot.data == false) {
-                          //print("광고진행중");
-                          return Container(
-                            alignment: Alignment.center,
-                            child: adWidget,
-                            width: banner.size.width.toDouble(),
-                            height: banner.size.height.toDouble(),
-                          );
-                        } else if (snapshot.data == true) {
-                          //print("광고 제거됨");
-                          return Container();
-                        }
-                      } else if (snapshot.hasError) {
-                        //print("error : isDonator futurebuilder sibal");
-                        return Container(
-                          child: Text("error"),
-                        );
-                      }
-                      return Container(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                  ),
-                ),
                 Container(
                   width: MediaQuery.of(context).size.width - 80,
                   decoration: boxDeco,
@@ -420,11 +388,12 @@ class _HomeState extends State<Home> {
                   width: MediaQuery.of(context).size.width - 80,
                   padding: EdgeInsets.all(10),
                   margin: EdgeInsets.all(10),
+                  alignment: Alignment.center,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
-                        alignment: Alignment.centerLeft,
+                        alignment: Alignment.center,
                         width: MediaQuery.of(context).size.width / 3,
                         height: 100,
                         child: TextButton.icon(
@@ -438,7 +407,7 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       Container(
-                        alignment: Alignment.centerRight,
+                        alignment: Alignment.center,
                         width: MediaQuery.of(context).size.width / 3,
                         height: 100,
                         child: FutureBuilder<bool>(
@@ -489,7 +458,38 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                 ),
-
+                Container(
+                  padding: EdgeInsets.all(20),
+                  child: FutureBuilder<bool>(
+                    future: isDonator,
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (snapshot.hasData) {
+                        print("isDonator? : " + snapshot.data.toString());
+                        if (snapshot.data == false) {
+                          print("광고진행중");
+                          return Container(
+                            alignment: Alignment.center,
+                            child: adWidget,
+                            width: banner.size.width.toDouble(),
+                            height: banner.size.height.toDouble(),
+                          );
+                        } else if (snapshot.data == true) {
+                          print("광고 제거됨");
+                          return Container();
+                        }
+                      } else if (snapshot.hasError) {
+                        print("error : isDonator futurebuilder sibal");
+                        return Container(
+                          child: Text("error"),
+                        );
+                      }
+                      return Container(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  ),
+                ),
                 // Container(
                 //   alignment: Alignment.center,
                 //   child: adWidget,
