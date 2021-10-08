@@ -21,11 +21,3 @@ class Sugguestion {
         createdAt: json['created_at']);
   }
 }
-
-// {
-//     "id": 18,
-//     "sugguestion_type": "test",
-//     "sugguestion_text": "아니쉬발ㅁㄴㅇㄴㅁㅇ뭐지?3sdsa",
-//     "count_likes": 0,
-//     "created_at": "2021-08-12T01:10:26.842Z"
-// }

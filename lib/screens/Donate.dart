@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:in_app_purchase_ios/in_app_purchase_ios.dart';
 import 'package:in_app_purchase_ios/store_kit_wrappers.dart';
 import 'package:small_talk_helper_app/utils/consumable_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:http/http.dart' as http;
 
 const bool _kAutoConsume = true;
 
@@ -35,9 +38,16 @@ class _DonateState extends State<Donate> {
   bool _purchasePending = false;
   bool _loading = true;
   String? _queryProductError;
-
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  //여기서부터 하면 댐
+
+  //donator restore
+  // ignore: non_constant_identifier_names
+  String? donator_name;
+  String? password;
+  bool registered = false;
+  String? donatorRegisterMessage;
+  String? donatorName;
+  String? restoreMessage;
 
   @override
   void initState() {
@@ -50,7 +60,9 @@ class _DonateState extends State<Donate> {
     }, onError: (error) {
       // handle error here.
     });
+
     initStoreInfo();
+
     super.initState();
   }
 
@@ -115,6 +127,13 @@ class _DonateState extends State<Donate> {
       _purchasePending = false;
       _loading = false;
     });
+    final SharedPreferences prefs = await _prefs;
+    if (prefs.getInt("isDonator") != null) {
+      setState(() {
+        donatorName = prefs.getString("donatorName");
+        registered = true;
+      });
+    }
   }
 
   @override
@@ -154,13 +173,60 @@ class _DonateState extends State<Donate> {
           children: [
             Container(
               decoration: boxDeco,
-              margin: EdgeInsets.all(40),
+              margin: EdgeInsets.all(10),
               child: Image(
+                height: MediaQuery.of(context).size.height / 3,
                 image: AssetImage('images/baggerWonmo.png'),
               ),
             ),
             _buildConnectionCheckTile(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                    margin: EdgeInsets.all(10),
+                    child: Text(donatorRegisterMessage ?? ""),
+                    alignment: Alignment.center),
+                Container(
+                    margin: EdgeInsets.all(10),
+                    child: Text(donatorName != null ? "한 푼 주셨던" : ""),
+                    alignment: Alignment.center),
+                Container(
+                    margin: EdgeInsets.all(10),
+                    child: Text(donatorName ?? ""),
+                    alignment: Alignment.center),
+                Container(
+                    child: Text(donatorName != null ? "님 감사해요" : ""),
+                    alignment: Alignment.center),
+              ],
+            ),
             _buildProductList(),
+            Card(
+                margin: EdgeInsets.all(10),
+                child: ListTile(
+                  title: Text(
+                    "광고제거 불러오기",
+                    style: TextStyle(height: 2),
+                  ),
+                  subtitle: Text(
+                    "효과 : 다른 기기에서 제거했던 광고제거 효과를 이 기기에도 적용합니다",
+                    style: TextStyle(height: 2),
+                  ),
+                  trailing: TextButton(
+                      child: Text("Restore"),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        primary: Colors.white,
+                      ),
+                      onPressed: () {
+                        if (registered == false) {
+                          showRestoreIAPTextFieldDialog(context);
+                        } else {
+                          print("이미함");
+                          return;
+                        }
+                      }),
+                )),
           ],
         ),
       );
@@ -197,7 +263,9 @@ class _DonateState extends State<Donate> {
 
   Card _buildConnectionCheckTile() {
     if (_loading) {
-      return Card(child: ListTile(title: const Text('연결 중...')));
+      return Card(
+          margin: EdgeInsets.all(10),
+          child: ListTile(title: const Text('연결 중...')));
     }
     final Widget storeHeader = ListTile(
       leading: Icon(_isAvailable ? Icons.check : Icons.block,
@@ -218,17 +286,20 @@ class _DonateState extends State<Donate> {
         ),
       ]);
     }
-    return Card(child: Column(children: children));
+    return Card(margin: EdgeInsets.all(10), child: Column(children: children));
   }
 
   Card _buildProductList() {
     if (_loading) {
       return Card(
+          margin: EdgeInsets.all(10),
           child: (ListTile(
               leading: CircularProgressIndicator(), title: Text('불러오는 중...'))));
     }
     if (!_isAvailable) {
-      return Card();
+      return Card(
+        margin: EdgeInsets.all(10),
+      );
     }
 
     List<ListTile> productList = <ListTile>[];
@@ -258,24 +329,30 @@ class _DonateState extends State<Donate> {
               primary: Colors.white,
             ),
             onPressed: () {
-              late PurchaseParam purchaseParam;
-              if (Platform.isAndroid) {
-                purchaseParam = GooglePlayPurchaseParam(
-                  productDetails: productDetails,
-                  applicationUserName: null,
-                );
+              if (registered == false) {
+                showDonatorRegisterTextFieldDialog(context);
+                return;
               } else {
-                purchaseParam = PurchaseParam(
-                  productDetails: productDetails,
-                  applicationUserName: null,
-                );
-              }
-              if (productDetails.id == _kConsumableId) {
-                _inAppPurchase.buyConsumable(
-                    purchaseParam: purchaseParam,
-                    autoConsume: _kAutoConsume || Platform.isIOS);
-              } else {
-                _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+                late PurchaseParam purchaseParam;
+                if (Platform.isAndroid) {
+                  purchaseParam = GooglePlayPurchaseParam(
+                    productDetails: productDetails,
+                    applicationUserName: null,
+                  );
+                } else {
+                  purchaseParam = PurchaseParam(
+                    productDetails: productDetails,
+                    applicationUserName: null,
+                  );
+                }
+                if (productDetails.id == _kConsumableId) {
+                  _inAppPurchase.buyConsumable(
+                      purchaseParam: purchaseParam,
+                      autoConsume: _kAutoConsume || Platform.isIOS);
+                } else {
+                  _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+                }
+                return;
               }
             },
           ),
@@ -283,9 +360,218 @@ class _DonateState extends State<Donate> {
       },
     ));
 
-    return Card(child: Column(children: productList));
+    return Card(
+      child: Column(children: productList),
+      margin: EdgeInsets.all(10),
+    );
   }
 
+  //-----------for restoring purchase----------------
+  Future<Map<String, dynamic>> registerDonator() async {
+    if (donator_name != null && password != null) {
+      try {
+        final response = await http.post(
+          Uri.parse(
+              "https://small-talk-helper.wonmonae.com/api/donator/register"),
+          body:
+              jsonEncode({"donator_name": donator_name, "password": password}),
+          headers: {"Content-Type": "application/json"},
+        );
+        if (response.statusCode == 200) {
+          return json.decode(response.body);
+        } else {
+          print("500?");
+          Map<String, dynamic> result = jsonDecode(response.body);
+          print(result.toString());
+          print(result["message"]);
+          return result;
+        }
+      } catch (e) {
+        print(e);
+        Map<String, dynamic> result = new Map<String, String>();
+        result = {"success": false};
+        return result;
+      }
+    } else {
+      Map<String, dynamic> result = new Map<String, String>();
+      result = {"success": false, "message": "no name, password"};
+      return result;
+    }
+  }
+
+  Future<Map<String, dynamic>> checkDonator() async {
+    if (donator_name != null && password != null) {
+      try {
+        final response = await http.post(
+          Uri.parse("https://small-talk-helper.wonmonae.com/api/donator/check"),
+          body:
+              jsonEncode({"donator_name": donator_name, "password": password}),
+          headers: {"Content-Type": "application/json"},
+        );
+        if (response.statusCode == 200) {
+          return json.decode(response.body);
+        } else {
+          print("500? in check");
+          Map<String, dynamic> result = jsonDecode(response.body);
+          print(result.toString());
+          print(result["message"]);
+          return result;
+        }
+      } catch (e) {
+        print(e);
+        Map<String, dynamic> result = new Map<String, String>();
+        result = {"success": false};
+        return result;
+      }
+    } else {
+      Map<String, dynamic> result = new Map<String, String>();
+      result = {"success": false, "message": "no name, password"};
+      return result;
+    }
+  }
+
+  void showDonatorRegisterTextFieldDialog(BuildContext context) async {
+    String result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(16.0),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  onChanged: (text) {
+                    setState(() {
+                      donator_name = text;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      labelText: '등록할 닉네임', hintText: '기부자로 등록할 예명을 입력해 주세요'),
+                ),
+                TextField(
+                  onChanged: (text) {
+                    setState(() {
+                      password = text;
+                    });
+                  },
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: "비밀번호"),
+                ),
+                TextButton(
+                  child: Text('확인'),
+                  onPressed: () async {
+                    if (donator_name != null && password != null) {
+                      var result = await registerDonator();
+                      print("button");
+                      print(result.toString());
+                      if (result["success"]) {
+                        setState(() {
+                          donatorRegisterMessage = "기부자 등록 성공!";
+                          donatorName = donator_name;
+                          registered = true;
+                        });
+                        final SharedPreferences prefs = await _prefs;
+
+                        await prefs.setInt("isRegister", 1);
+                        await prefs.setString(
+                            "donatorName", donator_name ?? "");
+
+                        Navigator.pop(context, "OK");
+                      } else {
+                        if (result["dup"] == true) {
+                          setState(() {
+                            donatorRegisterMessage = "중복된 닉네임입니다!";
+                          });
+                          Navigator.pop(context, "OK");
+                        } else {
+                          setState(() {
+                            donatorRegisterMessage = "죄송합니다. 등록에 문제가 생겼습니다!";
+                          });
+                          Navigator.pop(context, "OK");
+                        }
+                      }
+                    } else {
+                      Navigator.pop(context, "OK");
+                    }
+                  },
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void showRestoreIAPTextFieldDialog(BuildContext context) async {
+    String result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(16.0),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  onChanged: (text) {
+                    setState(() {
+                      donator_name = text;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      labelText: '등록했던 닉네임', hintText: '기부자로 등록했던 예명을 입력해 주세요'),
+                ),
+                TextField(
+                  onChanged: (text) {
+                    setState(() {
+                      password = text;
+                    });
+                  },
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: "비밀번호"),
+                ),
+                TextButton(
+                  child: Text('확인'),
+                  onPressed: () async {
+                    if (donator_name != null && password != null) {
+                      var result = await checkDonator();
+                      print("button 쳌");
+                      print(result.toString());
+                      if (result["success"]) {
+                        setState(() {
+                          donatorRegisterMessage = "기부했었던 분이셨군요?";
+                          donatorName = donator_name;
+                          registered = true;
+                        });
+                        final SharedPreferences prefs = await _prefs;
+
+                        await prefs.setInt("isRegister", 1);
+                        await prefs.setString(
+                            "donatorName", donator_name ?? "");
+                        await prefs.setInt("isDonator", 1);
+
+                        Navigator.pop(context, "OK");
+                      } else {
+                        setState(() {
+                          donatorRegisterMessage = "입력하신 닉네임으로 등록된 분이 없어요!";
+                        });
+                        Navigator.pop(context, "OK");
+                      }
+                    } else {
+                      Navigator.pop(context, "OK");
+                    }
+                    return;
+                  },
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  //------------------------------------------
   void showAlertDialog(BuildContext context) async {
     String result = await showDialog(
       context: context,
@@ -317,6 +603,7 @@ class _DonateState extends State<Donate> {
     // IMPORTANT!! Always verify purchase details before delivering the product.
     if (purchaseDetails.productID == _kConsumableId) {
       await ConsumableStore.save(purchaseDetails.purchaseID!);
+
       final SharedPreferences prefs = await _prefs;
       //왜인지 리스트를 여러개 쓰니 하나씩 이상해짐
       //불값도 이미 쓰고 있으니 인트로 해본다
@@ -367,7 +654,6 @@ class _DonateState extends State<Donate> {
             deliverProduct(purchaseDetails);
           } else {
             _handleInvalidPurchase(purchaseDetails);
-            print("s-s-s-s-s-s-s-s-s-s-어째서??-s-s-s-s-s-s-ss--s-s-s-s-ss-");
             return;
           }
         }

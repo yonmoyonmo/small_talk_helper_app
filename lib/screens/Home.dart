@@ -118,10 +118,11 @@ class _HomeState extends State<Home> {
         //unlike
         likeValue = -1;
         final response = await http.post(
-            smallTalkHelperEndpoint.getEndpoint("likes"),
-            body: jsonEncode(
-                {"sugguestionId": sugguestionId, "likeValue": likeValue}),
-            headers: {"Content-Type": "application/json"});
+          smallTalkHelperEndpoint.getEndpoint("likes"),
+          body: jsonEncode(
+              {"sugguestionId": sugguestionId, "likeValue": likeValue}),
+          headers: {"Content-Type": "application/json"},
+        );
 
         if (response.statusCode == 200) {
           setState(() {
