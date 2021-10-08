@@ -180,23 +180,19 @@ class _DonateState extends State<Donate> {
               ),
             ),
             _buildConnectionCheckTile(),
+            Container(
+                margin: EdgeInsets.all(10),
+                child: Text(donatorRegisterMessage ?? ""),
+                alignment: Alignment.center),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                    margin: EdgeInsets.all(10),
-                    child: Text(donatorRegisterMessage ?? ""),
-                    alignment: Alignment.center),
-                Container(
-                    margin: EdgeInsets.all(10),
-                    child: Text(donatorName != null ? "한 푼 주셨던" : ""),
-                    alignment: Alignment.center),
-                Container(
-                    margin: EdgeInsets.all(10),
+                    margin: EdgeInsets.only(right: 10),
                     child: Text(donatorName ?? ""),
                     alignment: Alignment.center),
                 Container(
-                    child: Text(donatorName != null ? "님 감사해요" : ""),
+                    child: Text(donatorName != null ? "님 감사해요!" : ""),
                     alignment: Alignment.center),
               ],
             ),
@@ -446,7 +442,7 @@ class _DonateState extends State<Donate> {
                     });
                   },
                   decoration: InputDecoration(
-                      labelText: '등록할 닉네임', hintText: '기부자로 등록할 예명을 입력해 주세요'),
+                      labelText: '등록할 닉네임', hintText: '등록할 예명을 입력해 주세요'),
                 ),
                 TextField(
                   onChanged: (text) {
@@ -493,6 +489,7 @@ class _DonateState extends State<Donate> {
                     } else {
                       Navigator.pop(context, "OK");
                     }
+                    return;
                   },
                 )
               ],
@@ -519,7 +516,7 @@ class _DonateState extends State<Donate> {
                     });
                   },
                   decoration: InputDecoration(
-                      labelText: '등록했던 닉네임', hintText: '기부자로 등록했던 예명을 입력해 주세요'),
+                      labelText: '등록했던 닉네임', hintText: '등록했던 예명을 입력해 주세요'),
                 ),
                 TextField(
                   onChanged: (text) {
