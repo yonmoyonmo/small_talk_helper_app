@@ -238,7 +238,7 @@ class _HomeState extends State<Home> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).primaryColor,
             elevation: 0,
             iconTheme: IconThemeData(color: Colors.black),
           ),
@@ -368,7 +368,7 @@ class _HomeState extends State<Home> {
                                       Text(
                                         snapshot.data!.sugguestionText,
                                         style: TextStyle(
-                                          fontSize: 25,
+                                          fontSize: 18,
                                           height: 2,
                                         ),
                                       ),

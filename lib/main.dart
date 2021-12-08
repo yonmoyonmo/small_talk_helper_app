@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Small_Talk_Helper',
       theme: ThemeData(
-          primaryColor: Colors.white,
+          primaryColor: Color.fromRGBO(159, 190, 227, 1),
           primarySwatch: Colors.grey,
           fontFamily: 'DungGeunMo'),
       initialRoute: '/',

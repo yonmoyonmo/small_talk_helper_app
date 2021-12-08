@@ -73,13 +73,9 @@ class _ToptenListState extends State<ToptenList> {
                         itemCount: snapshot.data!.sugguestions.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
-                            leading: Text(
-                              (index + 1).toString(),
-                              style: TextStyle(fontSize: 16),
-                            ),
                             title: Text(
-                              '${snapshot.data!.sugguestions[index].sugguestionText}',
-                              style: TextStyle(fontSize: 16, height: 2),
+                              '${(index + 1)} : ${snapshot.data!.sugguestions[index].sugguestionText}',
+                              style: TextStyle(fontSize: 20, height: 2),
                             ),
                           );
                         });

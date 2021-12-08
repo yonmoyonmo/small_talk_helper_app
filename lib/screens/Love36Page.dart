@@ -85,13 +85,9 @@ class _Love36PageState extends State<Love36Page> {
                             //   ),
                             // ),
                             child: ListTile(
-                              leading: Text(
-                                (index + 1).toString(),
-                                style: TextStyle(fontSize: 20),
-                              ),
                               title: Text(
-                                '${snapshot.data!.sugguestions[index].sugguestionText}',
-                                style: TextStyle(fontSize: 16, height: 2),
+                                '${(index + 1)} : ${snapshot.data!.sugguestions[index].sugguestionText}',
+                                style: TextStyle(fontSize: 18, height: 2),
                               ),
                             ),
                           );
