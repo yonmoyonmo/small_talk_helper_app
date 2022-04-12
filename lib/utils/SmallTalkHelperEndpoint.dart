@@ -1,4 +1,6 @@
 class SmallTalkHelperEndpoint {
+  // final String host =
+  //     "https://small-talk-helper.wonmocyberschool.com/api/sugguestion/small-talk-helper/";
   final String host =
       "https://small-talk-helper.wonmonae.com/api/sugguestion/small-talk-helper/";
 
