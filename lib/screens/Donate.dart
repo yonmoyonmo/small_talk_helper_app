@@ -368,7 +368,7 @@ class _DonateState extends State<Donate> {
       try {
         final response = await http.post(
           Uri.parse(
-              "https://small-talk-helper.wonmonae.com/api/donator/register"),
+              "https://small-talk-helper.wonmocyberschool.com/api/donator/register"),
           body:
               jsonEncode({"donator_name": donator_name, "password": password}),
           headers: {"Content-Type": "application/json"},
@@ -399,7 +399,8 @@ class _DonateState extends State<Donate> {
     if (donator_name != null && password != null) {
       try {
         final response = await http.post(
-          Uri.parse("https://small-talk-helper.wonmonae.com/api/donator/check"),
+          Uri.parse(
+              "https://small-talk-helper.wonmocyberschool.com/api/donator/check"),
           body:
               jsonEncode({"donator_name": donator_name, "password": password}),
           headers: {"Content-Type": "application/json"},
